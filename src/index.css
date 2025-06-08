@@ -1,0 +1,176 @@
+/* Importa las capas base de Tailwind CSS */
+@tailwind base;
+
+/* Importa las capas de componentes de Tailwind CSS */
+@tailwind components;
+
+/* Importa las capas de utilidades de Tailwind CSS */
+@tailwind utilities;
+
+/* =============================================================================
+   CORRECCIONES CRÍTICAS PARA EL SCROLL
+   ============================================================================= */
+
+/* Asegurar que html y body permitan scroll */
+html {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  height: 100%;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+/* Asegurar que el contenedor root permita scroll */
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Corregir cualquier problema de altura fija que pueda bloquear el scroll */
+* {
+  box-sizing: border-box;
+}
+
+/* Asegurar que los contenedores principales no tengan height fijo problemático */
+.App {
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Ejemplo: Fuente global para toda la aplicación */
+body {
+  font-family:
+    "Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #222;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  padding-bottom: 56px; /* Altura del footer fijo */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.dark body {
+  color: #f8fafc;
+  background-color: #0f172a;
+}
+
+/* Mejora títulos y subtítulos */
+h1:not(.text-white),
+h2:not(.text-white),
+h3:not(.text-white),
+h4:not(.text-white),
+h5:not(.text-white),
+h6:not(.text-white) {
+  font-family:
+    "Inter", "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #047857;
+}
+
+.dark h1:not(.text-white),
+.dark h2:not(.text-white),
+.dark h3:not(.text-white),
+.dark h4:not(.text-white),
+.dark h5:not(.text-white),
+.dark h6:not(.text-white) {
+  color: #a7f3d0;
+}
+
+/* Mejora los inputs y selects */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+}
+
+.dark input,
+.dark select,
+.dark textarea,
+.dark button {
+  color: #f8fafc;
+  background-color: #1e293b;
+}
+
+/* Estilos para el scrollbar personalizado mejorados */
+.custom-scrollbar {
+  scrollbar-width: thin; /* Para Firefox */
+  scrollbar-color: #a0aec0 transparent; /* Para Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #a0aec0; /* Color del thumb para el tema claro */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+  background-clip: content-box;
+}
+
+/* Estilos para el scrollbar en modo oscuro */
+.dark .custom-scrollbar {
+  scrollbar-color: #4a5568 transparent; /* Para Firefox en modo oscuro */
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  background-clip: content-box;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #2d3748;
+  background-clip: content-box;
+}
+
+/* Animación para los toasts (mensajes de notificación) */
+@keyframes pulseOnce {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  20% {
+    transform: scale(1.03) translateY(-2px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-1px);
+  }
+}
+
+.animate-pulse-once {
+  animation: pulseOnce 0.6s ease-in-out;
+}
+
+/*
+  Aquí puedes añadir cualquier estilo CSS global o personalizado
+  que no esté cubierto por Tailwind o que necesite ser anulado.
+*/

@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- ========== CONFIGURACIÓN BÁSICA ========== -->
+    <!-- Configuración de caracteres UTF-8 para soporte internacional -->
+    <meta charset="utf-8" />
+
+    <!-- Configuración de viewport optimizada para dispositivos móviles -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+    />
+    <!-- ========== ICONOS Y FAVICONS ========== -->
+    <!-- Favicon principal .ico para compatibilidad máxima -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon" />
+
+    <!-- Favicon PNG para diferentes tamaños - ÍCONOS OPTIMIZADOS -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-16x16.png"
+      sizes="16x16"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-32x32.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-64x64.png"
+      sizes="64x64"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/favicon-128x128.png"
+      sizes="128x128"
+    />
+
+    <!-- Iconos para Android y Chrome -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/android-chrome-192x192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="%PUBLIC_URL%/android-chrome-512x512.png"
+      sizes="512x512"
+    />
+
+    <!-- Iconos para PWA y dispositivos Apple -->
+    <link
+      rel="apple-touch-icon"
+      href="%PUBLIC_URL%/apple-touch-icon.png"
+      sizes="180x180"
+    />
+
+    <!-- Iconos adicionales para barra de tareas -->
+    <link
+      rel="shortcut icon"
+      href="%PUBLIC_URL%/favicon-32x32.png"
+      type="image/png"
+    />
+    <link
+      rel="bookmark"
+      href="%PUBLIC_URL%/favicon-64x64.png"
+      type="image/png"
+    />
+
+    <!-- ========== CONFIGURACIÓN PWA ========== -->
+    <!-- Manifiesto para Progressive Web App -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Configuración para dispositivos Apple -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Recetario Mágico" />
+
+    <!-- Configuración para otros dispositivos móviles -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Recetario Mágico" />
+
+    <!-- Colores del tema para la interfaz del sistema -->
+    <meta name="theme-color" content="#047857" />
+    <meta name="msapplication-TileColor" content="#047857" />
+
+    <!-- ========== OPTIMIZACIÓN DE RENDIMIENTO ========== -->
+    <!-- Preconexión a servicios externos para reducir latencia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- DNS prefetch para dominios que podrían usarse -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+
+    <!-- ========== SEO Y METADATOS ========== -->
+    <!-- Título optimizado para SEO -->
+    <title>Recetario Mágico - Gestiona tus Recetas y Listas de Compras</title>
+
+    <!-- Descripción meta optimizada para motores de búsqueda -->
+    <meta
+      name="description"
+      content="Recetario Mágico - Aplicación web para gestionar recetas de cocina y listas de compras. Organiza tus recetas favoritas de manera fácil y eficiente."
+    />
+
+    <!-- Palabras clave relevantes para SEO -->
+    <meta
+      name="keywords"
+      content="recetas, cocina, lista de compras, comida, ingredientes, recetario, planificador de comidas, app de cocina"
+    />
+
+    <!-- Información del autor -->
+    <meta name="author" content="Edwin Pantoja B" />
+
+    <!-- Configuración para robots de búsqueda -->
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <!-- Configuración de idioma y región -->
+    <meta name="language" content="Spanish" />
+    <meta name="geo.region" content="ES" />
+
+    <!-- ========== OPEN GRAPH PARA REDES SOCIALES ========== -->
+    <!-- Facebook y LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Recetario Mágico - Gestiona tus Recetas"
+    />
+    <meta
+      property="og:description"
+      content="Organiza tus recetas de cocina, planifica comidas semanales y crea listas de compras de manera eficiente."
+    />
+    <meta
+      property="og:image"
+      content="%PUBLIC_URL%/android-chrome-512x512.png"
+    />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Logo de Recetario Mágico" />
+    <meta property="og:site_name" content="Recetario Mágico" />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Recetario Mágico - Gestiona tus Recetas"
+    />
+    <meta
+      name="twitter:description"
+      content="Organiza recetas, planifica comidas y crea listas de compras eficientemente."
+    />
+    <meta
+      name="twitter:image"
+      content="%PUBLIC_URL%/android-chrome-512x512.png"
+    />
+    <meta name="twitter:image:alt" content="Logo de Recetario Mágico" />
+
+    <!-- ========== CONFIGURACIÓN DE SEGURIDAD ========== -->
+    <!-- Política de referencia para mejorar privacidad -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- ========== CONFIGURACIÓN DE ACCESIBILIDAD ========== -->
+    <!-- Reducir animaciones para usuarios sensibles al movimiento -->
+    <style>
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Estilo para el loader inicial optimizado */
+      #app-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #f8fafc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        pointer-events: none;
+      }
+
+      #app-loader.dark {
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+
+      .loader-content {
+        text-align: center;
+        user-select: none;
+      }
+
+      .loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #047857;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loader-text {
+        margin-top: 16px;
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      /* Clase para ocultar el loader */
+      .loader-hidden {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition:
+          opacity 0.3s ease-out,
+          visibility 0.3s ease-out !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ========== LOADER INICIAL OPTIMIZADO ========== -->
+    <!-- Loader que se muestra mientras React se carga -->
+    <div id="app-loader">
+      <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Cargando Recetario Mágico...</div>
+      </div>
+    </div>
+
+    <!-- ========== MENSAJE PARA JAVASCRIPT DESHABILITADO ========== -->
+    <!-- Mensaje informativo para usuarios sin JavaScript -->
+    <noscript>
+      <div
+        style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #f8fafc;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000000;
+          font-family:
+            -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;
+          text-align: center;
+          padding: 20px;
+          box-sizing: border-box;
+        "
+      >
+        <div style="max-width: 500px">
+          <h1 style="color: #047857; margin-bottom: 20px; font-size: 24px">
+            🍳 Recetario Mágico
+          </h1>
+          <h2 style="color: #dc2626; margin-bottom: 16px; font-size: 18px">
+            JavaScript Requerido
+          </h2>
+          <p style="color: #4b5563; margin-bottom: 12px; line-height: 1.5">
+            Esta aplicación requiere JavaScript para funcionar correctamente.
+          </p>
+          <p style="color: #4b5563; margin-bottom: 20px; line-height: 1.5">
+            Por favor, habilita JavaScript en tu navegador y recarga la página.
+          </p>
+          <button
+            onclick="window.location.reload()"
+            style="
+              background: #047857;
+              color: white;
+              border: none;
+              padding: 12px 24px;
+              border-radius: 8px;
+              font-size: 16px;
+              cursor: pointer;
+            "
+          >
+            Recargar Página
+          </button>
+        </div>
+      </div>
+    </noscript>
+
+    <!-- ========== CONTENEDOR PRINCIPAL ========== -->
+    <!-- Contenedor donde React montará la aplicación -->
+    <div id="root"></div>
+
+    <!-- ========== SCRIPT PARA MANEJAR LOADER ========== -->
+    <!-- Script optimizado que maneja el loader de forma segura -->
+    <script>
+      (function () {
+        "use strict";
+
+        // Referencias a elementos del DOM
+        const loader = document.getElementById("app-loader");
+        const root = document.getElementById("root");
+
+        // Verificar que los elementos existen
+        if (!loader || !root) {
+          console.warn("Elementos del DOM no encontrados");
+          return;
+        }
+
+        // Función para ocultar el loader de forma segura
+        function hideLoader() {
+          try {
+            if (loader && loader.parentNode) {
+              loader.classList.add("loader-hidden");
+              // Remover completamente del DOM después de la transición
+              setTimeout(function () {
+                if (loader && loader.parentNode) {
+                  loader.parentNode.removeChild(loader);
+                }
+              }, 350);
+            }
+          } catch (error) {
+            console.warn("Error al ocultar loader:", error);
+          }
+        }
+
+        // Detectar tema del sistema para el loader
+        try {
+          if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            loader.classList.add("dark");
+          }
+        } catch (error) {
+          console.warn("Error al detectar tema:", error);
+        }
+
+        // Variable para controlar si ya se ocultó el loader
+        let loaderHidden = false;
+
+        // Función principal para ocultar loader
+        function attemptHideLoader() {
+          if (loaderHidden) return;
+
+          // Verificar si React ya se montó verificando si hay contenido en root
+          if (
+            root &&
+            (root.children.length > 0 || root.innerHTML.trim() !== "")
+          ) {
+            loaderHidden = true;
+            setTimeout(hideLoader, 100); // Pequeño delay para asegurar que React terminó
+          }
+        }
+
+        // Observador para detectar cuando React se monta
+        if (window.MutationObserver) {
+          const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+              if (mutation.type === "childList" && mutation.target === root) {
+                attemptHideLoader();
+              }
+            });
+          });
+
+          observer.observe(root, {
+            childList: true,
+            subtree: true,
+          });
+
+          // Limpiar observador después de ocultar loader
+          const originalHideLoader = hideLoader;
+          hideLoader = function () {
+            observer.disconnect();
+            originalHideLoader();
+          };
+        }
+
+        // Eventos de respaldo
+        document.addEventListener("DOMContentLoaded", function () {
+          setTimeout(attemptHideLoader, 100);
+        });
+
+        window.addEventListener("load", function () {
+          setTimeout(attemptHideLoader, 200);
+        });
+
+        // Fallback de seguridad: ocultar después de tiempo máximo
+        setTimeout(function () {
+          if (!loaderHidden) {
+            console.warn("Loader ocultado por timeout de seguridad");
+            loaderHidden = true;
+            hideLoader();
+          }
+        }, 8000); // 8 segundos máximo
+
+        // Fallback adicional para casos extremos
+        setTimeout(function () {
+          if (loader && loader.parentNode) {
+            try {
+              loader.parentNode.removeChild(loader);
+            } catch (error) {
+              console.warn("Error en fallback final:", error);
+            }
+          }
+        }, 15000); // 15 segundos absoluto
+      })();
+    </script>
+
+    <!-- Los scripts de React se inyectarán automáticamente aquí durante el build -->
+  </body>
+</html>

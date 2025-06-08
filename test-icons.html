@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Icons Dark Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  </head>
+  <body class="p-8 bg-white dark:bg-slate-900 transition-colors">
+    <div class="max-w-md mx-auto">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">
+          Test de Iconos
+        </h1>
+        <button
+          id="toggle-dark"
+          class="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Toggle Dark Mode
+        </button>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-lg">
+        <h2 class="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
+          Iconos de Acción
+        </h2>
+
+        <div class="flex justify-end space-x-1.5">
+          <!-- Share Icon -->
+          <button
+            class="p-1.5 rounded-full hover:bg-blue-100 dark:hover:bg-slate-600 text-blue-500 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+          >
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Edit Icon -->
+          <button
+            class="p-1.5 rounded-full hover:bg-emerald-100 dark:hover:bg-slate-600 text-emerald-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+          >
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Delete Icon -->
+          <button
+            class="p-1.5 rounded-full hover:bg-red-100 dark:hover:bg-slate-600 text-red-500 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+          >
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="mt-6">
+          <p class="text-sm text-slate-600 dark:text-slate-400">
+            En modo claro: iconos con colores distintivos (azul, verde, rojo)<br />
+            En modo oscuro: todos los iconos deben aparecer en gris claro
+            (slate-300)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Toggle dark mode
+      const toggleBtn = document.getElementById("toggle-dark");
+      const html = document.documentElement;
+
+      toggleBtn.addEventListener("click", () => {
+        html.classList.toggle("dark");
+      });
+
+      // Set initial state
+      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        html.classList.add("dark");
+      }
+    </script>
+  </body>
+</html>

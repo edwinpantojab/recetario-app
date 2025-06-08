@@ -1,0 +1,83 @@
+{
+    // Archivo de tareas de VS Code para automatizar comandos comunes del proyecto
+    // Optimizado para mejorar rendimiento y evitar retardos durante el desarrollo
+    "version": "2.0.0",
+    "tasks": [
+        // Tarea de desarrollo - Inicia servidor con hot reload optimizado
+        {
+            "label": "npm: start",
+            "type": "shell",
+            "command": "npm start",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "base": "$tsc-watch",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*webpack.*",
+                    "endsPattern": "^.*compiled.*"
+                }
+            },
+            "options": {
+                "env": {
+                    "FAST_REFRESH": "true",
+                    "GENERATE_SOURCEMAP": "false"
+                }
+            }
+        },
+        // Tarea de construcción - Optimizada para producción
+        {
+            "label": "npm: build",
+            "type": "shell",
+            "command": "npm run build",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "options": {
+                "env": {
+                    "CI": "false"
+                }
+            }
+        },
+        // Tarea adicional - Instalar dependencias de forma optimizada
+        {
+            "label": "npm: install",
+            "type": "shell",
+            "command": "npm install",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        // Tarea adicional - Limpiar caché y reinstalar
+        {
+            "label": "npm: clean install",
+            "type": "shell",
+            "command": "npm ci",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

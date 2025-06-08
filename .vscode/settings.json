@@ -1,0 +1,46 @@
+// Este archivo configura opciones específicas para el entorno de desarrollo en VS Code
+{
+    // Configuraciones para CSS/SCSS/LESS - Ignora advertencias sobre reglas @ desconocidas (útil para Tailwind CSS)
+    "css.lint.unknownAtRules": "ignore",
+    "less.lint.unknownAtRules": "ignore",
+    "scss.lint.unknownAtRules": "ignore",
+    // Configuraciones para JSON - Optimización de rendimiento
+    "json.schemaDownload.enable": false,
+    "json.validate.enable": true,
+    // Configuraciones de rendimiento para evitar retardos
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/build/**": true,
+        "**/.git/**": true,
+        "**/dist/**": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/build": true,
+        "**/dist": true
+    },
+    // Configuraciones adicionales recomendadas para React + Tailwind
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    // Optimizaciones para CSS y Tailwind
+    "css.validate": false,
+    "tailwindCSS.includeLanguages": {
+        "javascript": "javascript",
+        "javascriptreact": "javascriptreact",
+        "html": "html"
+    },
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    // Configuraciones adicionales de rendimiento
+    "typescript.preferences.includePackageJsonAutoImports": "off",
+    "editor.minimap.enabled": false,
+    "editor.codeLens": false,
+    "breadcrumbs.enabled": false,
+    "editor.hover.delay": 300
+}
