@@ -47,7 +47,7 @@ const RECIPE_CONFIG = Object.freeze({
  * @param {number} recipe.servings - Número de porciones
  * @returns {Object} Receta formateada y optimizada
  */
-const createRecipe = (recipe) => {
+const createRecipe = recipe => {
   return Object.freeze({
     id: recipe.id,
     name: recipe.name,
@@ -360,6 +360,46 @@ export const DEFAULT_RECIPES = Object.freeze([
     category: RECIPE_CONFIG.CATEGORY_MAP.LUNCH,
     imageUrl: "https://i.ytimg.com/vi/jFn-F0Pc664/maxresdefault.jpg",
     servings: 6,
+  }),
+
+  createRecipe({
+    id: "receta-tacos-pastor",
+    name: "Tacos de Pollo al Pastor",
+    ingredients: [
+      "1 kg de pechuga de pollo cortada en tiras",
+      "2 chiles guajillo desvenados",
+      "1 chile chipotle en adobo",
+      "1/4 de taza de jugo de naranja",
+      "3 cucharadas de vinagre blanco",
+      "3 dientes de ajo",
+      "1 cucharadita de orégano seco",
+      "1 cucharadita de comino molido",
+      "1/2 cucharadita de achiote (opcional)",
+      "Sal y pimienta negra al gusto",
+      "12 tortillas de maíz",
+      "1 piña fresca cortada en cubitos",
+      "1 cebolla blanca finamente picada",
+      "Cilantro fresco picado",
+      "Limones en cuartos",
+      "Salsa verde o roja al gusto",
+    ],
+    instructions: [
+      "Remojar los chiles guajillo en agua caliente por 15 minutos hasta que se ablanden.",
+      "En una licuadora, mezclar los chiles escurridos, chipotle, jugo de naranja, vinagre, ajo, orégano, comino, achiote, sal y pimienta hasta obtener una marinada homogénea.",
+      "Marinar las tiras de pollo en esta mezcla por al menos 2 horas o toda la noche en el refrigerador.",
+      "Calentar una plancha o sartén grande a fuego medio-alto.",
+      "Cocinar el pollo marinado por 6-8 minutos por cada lado hasta que esté dorado y completamente cocido.",
+      "Dejar reposar el pollo por 5 minutos y luego cortar en cubitos pequeños.",
+      "Calentar las tortillas en un comal o sartén seca hasta que estén tibias y flexibles.",
+      "Armar los tacos colocando el pollo al pastor en cada tortilla.",
+      "Agregar cubitos de piña, cebolla picada y cilantro fresco.",
+      "Servir inmediatamente con limones y salsa al gusto.",
+    ],
+    prepTime: "45 minutos (+ 2 horas marinado)",
+    category: RECIPE_CONFIG.CATEGORY_MAP.LUNCH,
+    imageUrl:
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=600&h=400&fit=crop",
+    servings: 4,
   }),
 
   createRecipe({
@@ -743,6 +783,46 @@ export const DEFAULT_RECIPES = Object.freeze([
       "https://cdn0.uncomo.com/es/posts/0/9/0/como_hacer_limonada_sin_azucar_51090_orig.jpg",
     servings: 4,
   }),
+
+  createRecipe({
+    id: "receta-tacos-pastor",
+    name: "Tacos de Pollo al Pastor",
+    ingredients: [
+      "1 kg de pechuga de pollo cortada en tiras",
+      "2 chiles guajillo desvenados",
+      "1 chile chipotle en adobo",
+      "1/4 de taza de jugo de naranja",
+      "3 cucharadas de vinagre blanco",
+      "3 dientes de ajo",
+      "1 cucharadita de orégano seco",
+      "1 cucharadita de comino molido",
+      "1/2 cucharadita de achiote (opcional)",
+      "Sal y pimienta negra al gusto",
+      "12 tortillas de maíz",
+      "1 piña fresca cortada en cubitos",
+      "1 cebolla blanca finamente picada",
+      "Cilantro fresco picado",
+      "Limones en cuartos",
+      "Salsa verde o roja al gusto",
+    ],
+    instructions: [
+      "Remojar los chiles guajillo en agua caliente por 15 minutos hasta que se ablanden.",
+      "En una licuadora, mezclar los chiles escurridos, chipotle, jugo de naranja, vinagre, ajo, orégano, comino, achiote, sal y pimienta hasta obtener una marinada homogénea.",
+      "Marinar las tiras de pollo en esta mezcla por al menos 2 horas o toda la noche en el refrigerador.",
+      "Calentar una plancha o sartén grande a fuego medio-alto.",
+      "Cocinar el pollo marinado por 6-8 minutos por cada lado hasta que esté dorado y completamente cocido.",
+      "Dejar reposar el pollo por 5 minutos y luego cortar en cubitos pequeños.",
+      "Calentar las tortillas en un comal o sartén seca hasta que estén tibias y flexibles.",
+      "Armar los tacos colocando el pollo al pastor en cada tortilla.",
+      "Agregar cubitos de piña, cebolla picada y cilantro fresco.",
+      "Servir inmediatamente con limones y salsa al gusto.",
+    ],
+    prepTime: "45 minutos (+ 2 horas marinado)",
+    category: RECIPE_CONFIG.CATEGORY_MAP.LUNCH,
+    imageUrl:
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=600&h=400&fit=crop",
+    servings: 4,
+  }),
 ]);
 
 // =============================================================================
@@ -762,21 +842,18 @@ export const RECIPES_BY_CATEGORY = Object.freeze(
     return acc;
   }, {})
 );
-
 /**
  * Set optimizado de IDs de recetas para validación O(1)
  * Útil para verificar si una receta existe
  */
-export const RECIPE_IDS_SET = new Set(
-  DEFAULT_RECIPES.map((recipe) => recipe.id)
-);
+export const RECIPE_IDS_SET = new Set(DEFAULT_RECIPES.map(recipe => recipe.id));
 
 /**
  * Map optimizado de recetas por ID para acceso directo O(1)
  * Evita búsquedas lineales en el array
  */
 export const RECIPES_BY_ID = new Map(
-  DEFAULT_RECIPES.map((recipe) => [recipe.id, recipe])
+  DEFAULT_RECIPES.map(recipe => [recipe.id, recipe])
 );
 
 /**
