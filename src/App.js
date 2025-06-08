@@ -22,6 +22,7 @@ import { trackNavigation } from "./utils/analytics";
 
 // Componentes críticos (no lazy)
 import Toast from "./components/ui/Toast"; // Corregido: Se movió a la subcarpeta ui
+import PWAInstallBanner from "./components/ui/PWAInstallBanner";
 import NavButton from "./components/NavButton";
 import ClockDisplay from "./components/ClockDisplay";
 import ThemeToggle from "./components/ThemeToggle";
@@ -42,6 +43,7 @@ import { loadData, saveData, STORAGE_KEYS } from "./data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "./data/defaultRecipes";
 import { initializeScrollFixes } from "./utils/scrollUtils";
 import { MobileInteractionProvider } from "./contexts/MobileInteractionContext";
+import usePWAInstall from "./hooks/usePWAInstall";
 
 // =============================================================================
 // LAZY LOADING OPTIMIZADO
@@ -484,6 +486,8 @@ function App() {
   const [toast, showToast, hideToast] = useToast();
   const [activeTab, handleTabChange] = useNavigation();
   const [theme, toggleTheme] = useTheme();
+  const { showBanner, handleInstall, handleCloseBanner, isAppInstalled } =
+    usePWAInstall();
 
   // Estado de recetas optimizado con lazy loading inicial asíncrono
   const [userRecipes, setUserRecipes] = useState([]);
@@ -568,14 +572,14 @@ function App() {
           activeTab={activeTab}
           onTabChange={handleTabChange}
         />
-        {/* Área de contenido principal con error boundary implícito */}
+        {/* Área de contenido principal con error boundary implícito */}{" "}
         <main
-          className="max-w-7xl mx-auto w-full flex-1 mt-4 pb-4 overflow-x-hidden"
+          className="max-w-7xl mx-auto w-full flex-1 mt-4 pb-12 sm:pb-16 overflow-x-hidden"
           role="main"
           aria-label="Contenido principal"
         >
           <Suspense fallback={<LoadingFallback />}>{MainContent}</Suspense>
-        </main>
+        </main>{" "}
         {/* Sistema de notificaciones optimizado */}
         {toast.visible && (
           <Toast
@@ -585,6 +589,14 @@ function App() {
             visible={toast.visible}
           />
         )}{" "}
+        {/* Banner de instalación PWA */}
+        {showBanner && !isAppInstalled && (
+          <PWAInstallBanner
+            isOpen={showBanner}
+            onClose={handleCloseBanner}
+            onInstall={handleInstall}
+          />
+        )}
         {/* Pie de página */}
         <Footer />
       </div>

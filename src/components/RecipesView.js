@@ -490,9 +490,8 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
       checkSharedRecipe();
     }
   }, [recipes, showToast]);
-
   return (
-    <div className="w-full px-1 sm:px-2 md:px-4">
+    <div className="w-full px-1 sm:px-2 md:px-4 pb-2">
       {/* Sección de búsqueda y filtros */}
       <div className="px-1 sm:px-0">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
@@ -532,11 +531,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div>{" "}
       {/* Grid de recetas */}
-      <div className="mt-4 sm:mt-6">
+      <div className="mt-3 sm:mt-4">
         <div className="w-full px-1 sm:px-3">
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-2 gap-y-3 sm:gap-x-3 sm:gap-y-4">
             {filteredRecipes.length > 0
               ? filteredRecipes.map(recipe => (
                   <RecipeCard
@@ -607,15 +606,16 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         onClose={handleCloseIngredientsModal}
         recipe={recipeForIngredients}
         showToast={showToast}
-      />
+      />{" "}
       {/* Botón flotante para crear receta */}
       <button
         onClick={handleCreateNewRecipe}
-        className="fixed bottom-8 right-8 z-50 bg-gradient-to-br from-pink-400 to-emerald-500 hover:from-pink-500 hover:to-emerald-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center transition-all hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2 recipe-action-button"
+        className="fixed bottom-16 sm:bottom-20 right-4 sm:right-8 z-50 bg-gradient-to-br from-pink-400 to-emerald-500 hover:from-pink-500 hover:to-emerald-600 text-white rounded-full shadow-lg w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center transition-all hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2 recipe-action-button"
         title="Crear nueva receta"
         aria-label="Crear nueva receta"
       >
-        <Plus size={28} aria-hidden="true" />
+        <Plus size={24} className="sm:hidden" aria-hidden="true" />
+        <Plus size={28} className="hidden sm:block" aria-hidden="true" />
       </button>
     </div>
   );

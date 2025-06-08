@@ -785,7 +785,7 @@ export const DEFAULT_RECIPES = Object.freeze([
   }),
 
   createRecipe({
-    id: "receta-tacos-pastor",
+    id: "receta-tacos-pastor-2",
     name: "Tacos de Pollo al Pastor",
     ingredients: [
       "1 kg de pechuga de pollo cortada en tiras",

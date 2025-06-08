@@ -25,11 +25,11 @@ const Footer = () => {
       role="contentinfo"
       aria-label="Pie de página de la aplicación"
     >
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-emerald-400 font-semibold text-xs sm:text-sm tracking-wide select-none px-2 text-center break-words">
+      <div className="flex items-center justify-center gap-2 text-emerald-400 font-semibold text-xs sm:text-sm tracking-wide select-none px-2 text-center break-words">
         {/* Ícono principal de la aplicación */}
         <ChefHat
-          size={22}
-          className="text-emerald-400 drop-shadow"
+          size={18}
+          className="text-emerald-400 drop-shadow flex-shrink-0"
           aria-hidden="true"
         />
 

@@ -444,13 +444,13 @@ const WeeklyPlanner = ({
     [recipes]
   );
   return (
-    <div className="flex flex-col lg:flex-row gap-8 pb-12">
+    <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 pb-4 lg:pb-8">
       {/* Sección del Plan Semanal optimizada */}
       <div className="lg:w-3/5 xl:w-2/3">
-        <h2 className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-6 break-words">
+        <h2 className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-4 lg:mb-6 break-words">
           🗓️ Plan Semanal
-        </h2>{" "}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
           {DAYS_OF_WEEK.map(day => (
             <DayColumn
               key={day}
@@ -465,20 +465,20 @@ const WeeklyPlanner = ({
               onMobileTapDay={handleMobileTapDay}
               isHighlightedForMobile={isAddingToDay}
             />
-          ))}
+          ))}{" "}
         </div>
-      </div>{" "}
+      </div>
       {/* Sección de Recetas Disponibles optimizada */}
-      <div className="lg:w-2/5 xl:w-1/3 space-y-4 p-5 bg-white dark:bg-slate-800 rounded-xl shadow-xl border dark:border-slate-700">
-        <h2 className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-3 break-words">
+      <div className="lg:w-2/5 xl:w-1/3 space-y-2 lg:space-y-3 p-3 lg:p-4 bg-white dark:bg-slate-800 rounded-xl shadow-xl border dark:border-slate-700">
+        <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-2 break-words">
           📚 Recetas Disponibles
-        </h2>{" "}
-        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+        </h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-2 lg:mb-3">
           {isTouchDevice
             ? "Toca una receta para seleccionarla, luego toca un día."
-            : "Arrastra una receta a un día."}
+            : "Arrastra una receta a un día."}{" "}
         </p>
-        <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pb-8">
+        <div className="max-h-[50vh] lg:max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-3 lg:gap-4 pb-1 lg:pb-2">
           {availableRecipesSorted.length > 0 ? (
             availableRecipesSorted.map(recipe => (
               <RecipeCard
@@ -494,7 +494,7 @@ const WeeklyPlanner = ({
               🍲 No hay recetas. ¡Crea algunas!
             </p>
           )}
-        </div>{" "}
+        </div>
       </div>
       {/* Modal de detalles optimizado */}
       <RecipeDetailsModal recipe={selectedRecipe} onClose={handleCloseModal} />
