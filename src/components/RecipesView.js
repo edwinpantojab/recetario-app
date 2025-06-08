@@ -3,7 +3,7 @@ import RecipeCard from "./recipes/RecipeCard"; // Corregido: Se movió a la subc
 import RecipeForm from "./recipes/RecipeForm"; // Corregido: Se movió a la subcarpeta recipes
 import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
 import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
-import ShareModal from "./ShareModal";
+import SocialShareModal from "./SocialShareModal";
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "../data/defaultRecipes";
 import { Plus, PlusCircle, ClockIcon, Users } from "lucide-react";
@@ -56,9 +56,9 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
-  const [recipeToDelete, setRecipeToDelete] = useState(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [recipeToDelete, setRecipeToDelete] = useState(null);  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [recipeLinkToShare, setRecipeLinkToShare] = useState("");
+  const [recipeToShare, setRecipeToShare] = useState(null);
   // Cargar recetas al montar el componente
   useEffect(() => {
     const loadRecipes = async () => {
@@ -161,15 +161,14 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const handleCancelDelete = useCallback(() => {
     setIsConfirmDeleteModalOpen(false);
     setRecipeToDelete(null);
-  }, []);
-
-  // Manejador optimizado para compartir receta
+  }, []);  // Manejador optimizado para compartir receta
   const handleShareRecipe = useCallback(
     recipe => {
       const shareLink = `${window.location.origin}/recipe/${recipe.id}`;
       setRecipeLinkToShare(shareLink);
+      setRecipeToShare(recipe);
       setIsShareModalOpen(true);
-      showToast?.("Enlace de receta listo para compartir", "info");
+      showToast?.("¡Comparte esta deliciosa receta!", "info");
     },
     [showToast]
   );
@@ -458,14 +457,17 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         confirmButtonText="Eliminar"
         cancelButtonText="Cancelar"
         variant="danger"
-      />
-
-      {/* Modal para compartir receta */}
-      <ShareModal
+      />      {/* Modal para compartir receta */}
+      <SocialShareModal
         isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
+        onClose={() => {
+          setIsShareModalOpen(false);
+          setRecipeToShare(null);
+          setRecipeLinkToShare("");
+        }}
+        recipe={recipeToShare}
         shareUrl={recipeLinkToShare}
-        title="Compartir Receta"
+        showToast={showToast}
       />
 
       {/* Botón flotante para crear receta */}
