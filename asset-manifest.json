@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/recetario-app/static/css/main.7995a794.css",
-    "main.js": "/recetario-app/static/js/main.08f0c4a5.js",
-    "static/js/250.109905dc.chunk.js": "/recetario-app/static/js/250.109905dc.chunk.js",
-    "static/js/28.c6207d51.chunk.js": "/recetario-app/static/js/28.c6207d51.chunk.js",
+    "main.css": "/recetario-app/static/css/main.347093f7.css",
+    "main.js": "/recetario-app/static/js/main.6bb19b8a.js",
+    "static/js/250.795624cc.chunk.js": "/recetario-app/static/js/250.795624cc.chunk.js",
+    "static/js/28.f624a06f.chunk.js": "/recetario-app/static/js/28.f624a06f.chunk.js",
     "static/js/969.95220e18.chunk.js": "/recetario-app/static/js/969.95220e18.chunk.js",
-    "static/js/281.c41e268d.chunk.js": "/recetario-app/static/js/281.c41e268d.chunk.js",
+    "static/js/103.a6277e3c.chunk.js": "/recetario-app/static/js/103.a6277e3c.chunk.js",
     "index.html": "/recetario-app/index.html",
-    "main.7995a794.css.map": "/recetario-app/static/css/main.7995a794.css.map",
-    "main.08f0c4a5.js.map": "/recetario-app/static/js/main.08f0c4a5.js.map",
-    "250.109905dc.chunk.js.map": "/recetario-app/static/js/250.109905dc.chunk.js.map",
-    "28.c6207d51.chunk.js.map": "/recetario-app/static/js/28.c6207d51.chunk.js.map",
+    "main.347093f7.css.map": "/recetario-app/static/css/main.347093f7.css.map",
+    "main.6bb19b8a.js.map": "/recetario-app/static/js/main.6bb19b8a.js.map",
+    "250.795624cc.chunk.js.map": "/recetario-app/static/js/250.795624cc.chunk.js.map",
+    "28.f624a06f.chunk.js.map": "/recetario-app/static/js/28.f624a06f.chunk.js.map",
     "969.95220e18.chunk.js.map": "/recetario-app/static/js/969.95220e18.chunk.js.map",
-    "281.c41e268d.chunk.js.map": "/recetario-app/static/js/281.c41e268d.chunk.js.map"
+    "103.a6277e3c.chunk.js.map": "/recetario-app/static/js/103.a6277e3c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7995a794.css",
-    "static/js/main.08f0c4a5.js"
+    "static/css/main.347093f7.css",
+    "static/js/main.6bb19b8a.js"
   ]
 }
