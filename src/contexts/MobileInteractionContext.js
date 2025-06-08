@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
+import { trackMobileInteraction } from "../utils/analytics";
 
 const MobileInteractionContext = createContext();
 
@@ -10,11 +11,16 @@ export const MobileInteractionProvider = ({ children }) => {
   const [selectedRecipeForMobile, setSelectedRecipeForMobile] = useState(null);
   const [isAddingToDay, setIsAddingToDay] = useState(false);
   const [showMobileInstructions, setShowMobileInstructions] = useState(false);
-
   const selectRecipeForMobile = useCallback(recipe => {
     setSelectedRecipeForMobile(recipe);
     setIsAddingToDay(true);
     setShowMobileInstructions(true);
+
+    // Track mobile recipe selection
+    trackMobileInteraction.touch(recipe.id, {
+      recipeName: recipe.name,
+      actionType: "recipe_selection",
+    });
   }, []);
 
   const clearMobileSelection = useCallback(() => {

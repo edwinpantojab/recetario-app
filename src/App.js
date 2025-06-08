@@ -17,6 +17,9 @@ import React, {
 } from "react";
 import "./App.css";
 
+// Utilidades de Google Analytics
+import { trackNavigation } from "./utils/analytics";
+
 // Componentes críticos (no lazy)
 import Toast from "./components/ui/Toast"; // Corregido: Se movió a la subcarpeta ui
 import NavButton from "./components/NavButton";
@@ -201,11 +204,17 @@ const useTheme = () => {
 
     applyTheme(theme);
   }, [theme]);
-
   // Función optimizada para alternar tema
   const toggleTheme = useCallback(() => {
     startTransition(() => {
-      setTheme(currentTheme => (currentTheme === "dark" ? "light" : "dark"));
+      setTheme(currentTheme => {
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        // Tracking de Google Analytics para cambio de tema
+        trackNavigation.toggleTheme(newTheme);
+
+        return newTheme;
+      });
     });
   }, []);
 
@@ -279,7 +288,6 @@ const useToast = () => {
 const useNavigation = () => {
   const [activeTab, setActiveTab] = useState(NAVIGATION_CONFIG.DEFAULT_TAB);
   const [preloadedTabs, setPreloadedTabs] = useState(new Set());
-
   // Función optimizada para cambio de pestaña
   const handleTabChange = useCallback(
     newTab => {
@@ -287,6 +295,9 @@ const useNavigation = () => {
 
       startTransition(() => {
         setActiveTab(newTab);
+
+        // Tracking de Google Analytics para cambio de vista
+        trackNavigation.changeView(newTab);
 
         // Marcar como visitado para evitar recargas innecesarias
         setPreloadedTabs(prev => new Set([...prev, newTab]));

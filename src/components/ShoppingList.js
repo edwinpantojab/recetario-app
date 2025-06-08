@@ -27,6 +27,7 @@ import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movi�
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_SHOPPING_ITEMS } from "../data/defaultShoppingItems";
 import { DEFAULT_SHOPPING_CATEGORIES } from "../data/constants";
+import { trackRecipeEvent } from "../utils/analytics";
 
 // =============================================================================
 // CONFIGURACIÓN Y OPTIMIZACIONES DEL COMPONENTE
@@ -197,6 +198,10 @@ const ShoppingList = ({ showToast }) => {
   const [shoppingItems, setShoppingItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
   const [newItemCategory, setNewItemCategory] = useState("Supermercado");
+  // NUEVO: Estado para filtrar por categorías
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(
+    "Todas las categorías"
+  );
   const [isLoadingShoppingList, setIsLoadingShoppingList] = useState(true);
   const [errorShoppingList, setErrorShoppingList] = useState(null);
 
@@ -419,7 +424,6 @@ const ShoppingList = ({ showToast }) => {
       getLocalShoppingItems,
     ]
   );
-
   // Añadir un nuevo ítem a la lista de compras con validación
   const handleAddItem = useCallback(
     e => {
@@ -442,20 +446,42 @@ const ShoppingList = ({ showToast }) => {
       };
       const newItems = [...currentItems, newItem];
       updateItems(newItems);
+
+      // Track item added to shopping list
+      trackRecipeEvent.addToShoppingList(newItem.id, {
+        itemName: newItem.name,
+        category: newItem.category,
+        listSize: newItems.length,
+      });
+
       setNewItemName("");
       showToast && showToast("Producto añadido.", "success");
     },
     [newItemName, newItemCategory, shoppingItems, updateItems, showToast]
   );
-
   // Agrupa los ítems de la lista de compras por categoría y los ordena alfabéticamente por nombre
+  // ACTUALIZADO: Incluye filtro por categorías
   const groupedItems = useMemo(() => {
     const grouped = {};
     // Validar que shoppingItems sea un array
     const validItems = Array.isArray(shoppingItems) ? shoppingItems : [];
 
+    // Filtrar por categoría seleccionada
+    const filteredByCategory =
+      selectedCategoryFilter === "Todas las categorías"
+        ? validItems
+        : validItems.filter(item => item.category === selectedCategoryFilter);
+
     allShoppingCategories.forEach(category => {
-      const itemsInCategory = validItems
+      // Solo mostrar categorías que coincidan con el filtro
+      if (
+        selectedCategoryFilter !== "Todas las categorías" &&
+        category !== selectedCategoryFilter
+      ) {
+        return;
+      }
+
+      const itemsInCategory = filteredByCategory
         .filter(item => item.category === category)
         .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
       if (itemsInCategory.length > 0) {
@@ -463,7 +489,7 @@ const ShoppingList = ({ showToast }) => {
       }
     });
     return grouped;
-  }, [allShoppingCategories, shoppingItems]);
+  }, [allShoppingCategories, shoppingItems, selectedCategoryFilter]);
 
   // Calcula el presupuesto restante
   const numericBudget = parsePrice(budget) || 0;
@@ -819,6 +845,26 @@ const ShoppingList = ({ showToast }) => {
               </div>
             </div>
           )}
+        </div>
+        {/* Filtro por categoría */}
+        <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-slate-700/50 dark:to-slate-600/50 rounded-xl border border-purple-200 dark:border-slate-600 shadow-sm">
+          <label className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-2">
+            🎯 Filtrar por Categoría
+          </label>
+          <div className="flex items-center gap-3">
+            <select
+              value={selectedCategoryFilter}
+              onChange={e => setSelectedCategoryFilter(e.target.value)}
+              className="flex-1 p-3 rounded-lg border-2 border-purple-200 dark:border-purple-400/30 bg-white dark:bg-gradient-to-br dark:from-slate-800/50 dark:to-slate-700/30 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-purple-400 focus:border-purple-400 dark:focus:border-purple-400 dark:focus:ring-purple-400/50 transition-all duration-200 shadow-sm backdrop-blur-sm"
+            >
+              <option value="Todas las categorías">Todas las categorías</option>
+              {allShoppingCategories.map(cat => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         {/* Lista de productos agrupados por categoría */}
         <div className="space-y-2 pb-4">

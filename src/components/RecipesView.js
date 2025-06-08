@@ -4,10 +4,12 @@ import RecipeForm from "./recipes/RecipeForm"; // Corregido: Se movió a la subc
 import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
 import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
 import SocialShareModal from "./SocialShareModal";
+import IngredientsListModal from "./ui/IngredientsListModal"; // NUEVO: Modal para mostrar solo ingredientes
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "../data/defaultRecipes";
-import { Plus, PlusCircle, ClockIcon, Users } from "lucide-react";
+import { Plus, PlusCircle, ClockIcon, Users, ShoppingCart } from "lucide-react";
 import { CATEGORIES } from "../data/constants";
+import { trackRecipeEvent } from "../utils/analytics";
 
 /**
  * Constantes del componente
@@ -60,6 +62,10 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [recipeLinkToShare, setRecipeLinkToShare] = useState("");
   const [recipeToShare, setRecipeToShare] = useState(null);
+
+  // NUEVO: Estados para el modal de ingredientes
+  const [isIngredientsModalOpen, setIsIngredientsModalOpen] = useState(false);
+  const [recipeForIngredients, setRecipeForIngredients] = useState(null);
   // Cargar recetas al montar el componente
   useEffect(() => {
     const loadRecipes = async () => {
@@ -102,8 +108,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   // Generar ID único optimizado
   const generateRecipeId = useCallback(() => {
     return `receta-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }, []);
-  // Manejador optimizado para guardar/editar receta
+  }, []); // Manejador optimizado para guardar/editar receta
   const handleSaveRecipe = useCallback(
     async recipeData => {
       let newRecipes;
@@ -119,17 +124,34 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
               }
             : recipe
         );
+
+        // Track recipe edit event
+        trackRecipeEvent.edit(editingRecipe.id, {
+          name: recipeData.name,
+          category: recipeData.category,
+          time: recipeData.time,
+          servings: recipeData.servings,
+        });
+
         showToast?.("Receta actualizada exitosamente", "success");
       } else {
         // Modo creación
-        newRecipes = [
-          ...recipes,
-          {
-            ...recipeData,
-            id: generateRecipeId(),
-            createdAt: new Date().toISOString(),
-          },
-        ];
+        const newRecipe = {
+          ...recipeData,
+          id: generateRecipeId(),
+          createdAt: new Date().toISOString(),
+        };
+
+        newRecipes = [...recipes, newRecipe];
+
+        // Track recipe creation event
+        trackRecipeEvent.create(newRecipe.id, {
+          name: recipeData.name,
+          category: recipeData.category,
+          time: recipeData.time,
+          servings: recipeData.servings,
+        });
+
         showToast?.("Receta creada exitosamente", "success");
       }
 
@@ -144,13 +166,26 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const handleDeleteRecipeRequest = useCallback(id => {
     setRecipeToDelete(id);
     setIsConfirmDeleteModalOpen(true);
-  }, []);
-  // Manejador para confirmar eliminación
+  }, []); // Manejador para confirmar eliminación
   const handleDeleteRecipe = useCallback(async () => {
     if (!recipeToDelete) return;
 
+    // Find recipe to track before deletion
+    const recipeToDeleteData = recipes.find(
+      recipe => recipe.id === recipeToDelete
+    );
+
     const newRecipes = recipes.filter(recipe => recipe.id !== recipeToDelete);
     await saveRecipes(newRecipes);
+
+    // Track recipe deletion event
+    if (recipeToDeleteData) {
+      trackRecipeEvent.delete(recipeToDelete, {
+        name: recipeToDeleteData.name,
+        category: recipeToDeleteData.category,
+      });
+    }
+
     showToast?.("Receta eliminada exitosamente", "success");
 
     // Resetear estado del modal
@@ -170,6 +205,14 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
       setRecipeLinkToShare(shareLink);
       setRecipeToShare(recipe);
       setIsShareModalOpen(true);
+
+      // Track recipe share event
+      trackRecipeEvent.share(recipe.id, {
+        name: recipe.name,
+        category: recipe.category,
+        shareMethod: "modal",
+      });
+
       showToast?.("¡Comparte esta deliciosa receta!", "info");
     },
     [showToast]
@@ -180,7 +223,6 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
     setEditingRecipe(null);
     setIsFormOpen(true);
   }, []);
-
   // Manejador para editar receta
   const handleEditRecipe = useCallback(recipe => {
     setEditingRecipe(recipe);
@@ -191,6 +233,29 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const handleCloseForm = useCallback(() => {
     setIsFormOpen(false);
     setEditingRecipe(null);
+  }, []);
+
+  // NUEVO: Manejadores para el modal de ingredientes
+  const handleShowIngredients = useCallback(
+    recipe => {
+      setRecipeForIngredients(recipe);
+      setIsIngredientsModalOpen(true);
+
+      // Track ingredients view event
+      trackRecipeEvent.viewIngredients?.(recipe.id, {
+        name: recipe.name,
+        category: recipe.category,
+        ingredientsCount: recipe.ingredients?.length || 0,
+      });
+
+      showToast?.("📝 Lista de ingredientes lista para usar", "info");
+    },
+    [showToast]
+  );
+
+  const handleCloseIngredientsModal = useCallback(() => {
+    setIsIngredientsModalOpen(false);
+    setRecipeForIngredients(null);
   }, []);
 
   // Recetas filtradas memoizadas
@@ -211,7 +276,6 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
       recipeName || "Receta"
     )}`;
   }, []);
-
   // Componente de detalles de receta memoizado
   const RecipeDetailsModal = useMemo(
     () =>
@@ -276,6 +340,16 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                   </span>
                 </div>
               </div>
+              {/* NUEVO: Botón para ver solo ingredientes */}
+              <div className="w-full mb-4">
+                <button
+                  onClick={() => handleShowIngredients(recipe)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <ShoppingCart size={20} />
+                  Ver Solo Lista de Ingredientes
+                </button>
+              </div>
               {/* Ingredientes */}
               <div className="w-full mb-4">
                 <h3 className="text-lg font-bold text-emerald-700 dark:text-emerald-300 mb-2 flex items-center">
@@ -332,7 +406,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
           </Modal>
         );
       },
-    [getPlaceholderImage]
+    [getPlaceholderImage, handleShowIngredients]
   );
 
   // Mensaje de recetas vacías memoizado
@@ -527,6 +601,13 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         shareUrl={recipeLinkToShare}
         showToast={showToast}
       />{" "}
+      {/* NUEVO: Modal para mostrar solo ingredientes */}
+      <IngredientsListModal
+        isOpen={isIngredientsModalOpen}
+        onClose={handleCloseIngredientsModal}
+        recipe={recipeForIngredients}
+        showToast={showToast}
+      />
       {/* Botón flotante para crear receta */}
       <button
         onClick={handleCreateNewRecipe}

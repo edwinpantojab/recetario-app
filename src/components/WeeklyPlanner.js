@@ -12,6 +12,7 @@ import { saveData, loadData } from "../data/localStorageHelpers";
 import { useMobileDetection } from "../hooks/useMobileDetection";
 import { useMobileInteraction } from "../contexts/MobileInteractionContext";
 import MobileInstructions from "./mobile/MobileInstructions";
+import { trackRecipeEvent } from "../utils/analytics";
 
 // Constantes optimizadas para mejor rendimiento
 const DAYS_OF_WEEK = [
@@ -337,7 +338,6 @@ const WeeklyPlanner = ({
   const handleDragOverDay = useCallback(e => {
     e.preventDefault();
   }, []);
-
   // Manejador optimizado para añadir receta a un día
   const handleDropRecipeOnDay = useCallback(
     (dayKey, recipeId) => {
@@ -349,10 +349,21 @@ const WeeklyPlanner = ({
       if (!updatedPlan[dayKey].includes(recipeId)) {
         updatedPlan[dayKey].push(recipeId);
         updateWeeklyPlan(updatedPlan);
+
+        // Track recipe added to planner
+        const recipe = allUserRecipes.find(r => r.id === recipeId);
+        if (recipe) {
+          trackRecipeEvent.addToPlanner(recipeId, {
+            recipeName: recipe.name,
+            day: dayKey,
+            plannerSize: updatedPlan[dayKey].length,
+          });
+        }
+
         showToast?.("Receta añadida al planificador.", "success");
       }
     },
-    [weeklyPlan, updateWeeklyPlan, showToast]
+    [weeklyPlan, updateWeeklyPlan, showToast, allUserRecipes]
   );
 
   // Manejador optimizado para eliminar receta de un día
@@ -390,13 +401,20 @@ const WeeklyPlanner = ({
   const handleCloseModal = useCallback(() => {
     setSelectedRecipe(null);
   }, []);
-
   // Manejador para toque en día (dispositivos móviles)
   const handleMobileTapDay = useCallback(
     dayKey => {
       if (selectedRecipeForMobile && isAddingToDay) {
         handleDropRecipeOnDay(dayKey, selectedRecipeForMobile.id);
         clearMobileSelection();
+
+        // Track mobile interaction
+        trackRecipeEvent.addToPlanner(selectedRecipeForMobile.id, {
+          recipeName: selectedRecipeForMobile.name,
+          day: dayKey,
+          interactionType: "mobile_tap",
+        });
+
         showToast?.("Receta añadida mediante toque.", "success");
       }
     },
