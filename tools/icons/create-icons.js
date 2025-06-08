@@ -1,5 +1,13 @@
 const fs = require("fs");
 
+// Sistema de logging para desarrollo
+const logger = {
+  success: msg => process.stdout.write(`✅ ${msg}\n`),
+  info: msg => process.stdout.write(`ℹ️ ${msg}\n`),
+  warn: msg => process.stdout.write(`⚠️ ${msg}\n`),
+  step: (num, msg) => process.stdout.write(`${num}. ${msg}\n`),
+};
+
 // Función para crear favicon ICO simple usando datos básicos
 function createFaviconICO() {
   // Este es un favicon ICO básico de 16x16 en formato base64
@@ -14,15 +22,17 @@ try {
   const icoData = createFaviconICO();
   fs.writeFileSync("public/favicon.ico", icoData);
   fs.writeFileSync("build/favicon.ico", icoData);
-  console.log("✅ favicon.ico actualizado en public/ y build/");
+  logger.success("favicon.ico actualizado en public/ y build/");
 } catch (error) {
-  console.log("⚠️ Error creando favicon.ico:", error.message);
+  logger.warn(`Error creando favicon.ico: ${error.message}`);
 }
 
-console.log("🎨 Íconos base creados. Para generar todos los tamaños PNG:");
-console.log("1. Abre generate-icons.html en tu navegador");
-console.log("2. Selecciona el diseño que más te guste");
-console.log('3. Haz clic en "Descargar Todos los Tamaños"');
-console.log(
-  "4. Mueve los archivos descargados a las carpetas public/ y build/"
+// Instrucciones para generar iconos
+logger.info("🎨 Íconos base creados. Para generar todos los tamaños PNG:");
+logger.step(1, "Abre generate-icons.html en tu navegador");
+logger.step(2, "Selecciona el diseño que más te guste");
+logger.step(3, 'Haz clic en "Descargar Todos los Tamaños"');
+logger.step(
+  4,
+  "Mueve los archivos descargados a las carpetas public/ y build/"
 );

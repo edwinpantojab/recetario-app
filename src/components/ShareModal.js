@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useRef } from "react";
 import { Copy, Check, Share2, ExternalLink } from "lucide-react";
-import Modal from "./Modal";
+import Modal from "./layout/Modal";
 
 /**
  * @fileoverview Componente ShareModal para compartir recetas

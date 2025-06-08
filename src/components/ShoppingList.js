@@ -23,7 +23,7 @@ import {
   Minus,
   Trash2,
 } from "lucide-react";
-import CustomConfirmModal from "./CustomConfirmModal";
+import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_SHOPPING_ITEMS } from "../data/defaultShoppingItems";
 import { DEFAULT_SHOPPING_CATEGORIES } from "../data/constants";

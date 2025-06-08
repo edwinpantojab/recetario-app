@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import RecipeCard from "./RecipeCard";
-import RecipeForm from "./RecipeForm";
-import Modal from "./Modal";
-import CustomConfirmModal from "./CustomConfirmModal";
+import RecipeCard from "./recipes/RecipeCard"; // Corregido: Se movió a la subcarpeta recipes
+import RecipeForm from "./recipes/RecipeForm"; // Corregido: Se movió a la subcarpeta recipes
+import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
+import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
 import ShareModal from "./ShareModal";
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "../data/defaultRecipes";

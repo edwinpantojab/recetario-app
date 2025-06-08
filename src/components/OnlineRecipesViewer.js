@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Globe, PlusCircle, Trash2, LinkIcon } from "lucide-react";
-import CustomConfirmModal from "./CustomConfirmModal";
+import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
 import { saveData, loadData } from "../data/localStorageHelpers";
 
 /**

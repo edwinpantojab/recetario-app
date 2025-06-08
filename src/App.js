@@ -18,11 +18,11 @@ import React, {
 import "./App.css";
 
 // Componentes críticos (no lazy)
-import Toast from "./components/Toast";
+import Toast from "./components/ui/Toast"; // Corregido: Se movió a la subcarpeta ui
 import NavButton from "./components/NavButton";
 import ClockDisplay from "./components/ClockDisplay";
 import ThemeToggle from "./components/ThemeToggle";
-import Footer from "./components/Footer";
+import Footer from "./components/layout/Footer"; // Corregido: Se movió a la subcarpeta layout
 
 // Iconos optimizados con importación selectiva
 import {

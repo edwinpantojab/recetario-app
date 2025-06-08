@@ -6,8 +6,8 @@ import {
   ClockIcon,
   Users,
 } from "lucide-react";
-import RecipeCard from "./RecipeCard";
-import Modal from "./Modal";
+import RecipeCard from "./recipes/RecipeCard"; // Corregido: Se movió a la subcarpeta recipes
+import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
 import { saveData, loadData } from "../data/localStorageHelpers";
 
 // Constantes optimizadas para mejor rendimiento

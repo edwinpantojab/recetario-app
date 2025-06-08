@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import Modal from "./Modal";
+import Modal from "../layout/Modal"; // Corregido: Ruta actualizada para acceder a la carpeta layout
 import { AlertTriangle } from "lucide-react";
 
 /**

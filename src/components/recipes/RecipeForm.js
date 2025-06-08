@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { PlusCircle, Trash2, Camera, Upload, X } from "lucide-react";
-import Modal from "./Modal";
+import Modal from "../layout/Modal";
 
 /**
  * Categorías de recetas disponibles
