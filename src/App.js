@@ -38,6 +38,7 @@ import {
 import { loadData, saveData, STORAGE_KEYS } from "./data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "./data/defaultRecipes";
 import { initializeScrollFixes } from "./utils/scrollUtils";
+import { MobileInteractionProvider } from "./contexts/MobileInteractionContext";
 
 // =============================================================================
 // LAZY LOADING OPTIMIZADO
@@ -547,37 +548,36 @@ function App() {
     }
   }, [activeTab, userRecipes, showToast, recipesLoaded]);
   return (
-    <div className="App min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col transition-colors duration-200 overflow-x-hidden">
-      {/* Header optimizado */}
-      <AppHeader
-        theme={theme}
-        toggleTheme={toggleTheme}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
-
-      {/* Área de contenido principal con error boundary implícito */}
-      <main
-        className="max-w-7xl mx-auto w-full flex-1 mt-4 pb-4 overflow-x-hidden"
-        role="main"
-        aria-label="Contenido principal"
-      >
-        <Suspense fallback={<LoadingFallback />}>{MainContent}</Suspense>
-      </main>
-
-      {/* Sistema de notificaciones optimizado */}
-      {toast.visible && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={hideToast}
-          visible={toast.visible}
+    <MobileInteractionProvider>
+      <div className="App min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col transition-colors duration-200 overflow-x-hidden">
+        {/* Header optimizado */}
+        <AppHeader
+          theme={theme}
+          toggleTheme={toggleTheme}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
         />
-      )}
-
-      {/* Pie de página */}
-      <Footer />
-    </div>
+        {/* Área de contenido principal con error boundary implícito */}
+        <main
+          className="max-w-7xl mx-auto w-full flex-1 mt-4 pb-4 overflow-x-hidden"
+          role="main"
+          aria-label="Contenido principal"
+        >
+          <Suspense fallback={<LoadingFallback />}>{MainContent}</Suspense>
+        </main>
+        {/* Sistema de notificaciones optimizado */}
+        {toast.visible && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={hideToast}
+            visible={toast.visible}
+          />
+        )}{" "}
+        {/* Pie de página */}
+        <Footer />
+      </div>
+    </MobileInteractionProvider>
   );
 }
 

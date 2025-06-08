@@ -9,6 +9,9 @@ import {
 import RecipeCard from "./recipes/RecipeCard"; // Corregido: Se movió a la subcarpeta recipes
 import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
 import { saveData, loadData } from "../data/localStorageHelpers";
+import { useMobileDetection } from "../hooks/useMobileDetection";
+import { useMobileInteraction } from "../contexts/MobileInteractionContext";
+import MobileInstructions from "./mobile/MobileInstructions";
 
 // Constantes optimizadas para mejor rendimiento
 const DAYS_OF_WEEK = [
@@ -62,8 +65,11 @@ const DayColumn = React.memo(
     onRemoveRecipeFromDay,
     onRotateRecipeForDay,
     onShowRecipeDetails,
+    onMobileTapDay,
+    isHighlightedForMobile,
   }) => {
     const dayKey = day.toLowerCase();
+    const { isTouchDevice } = useMobileDetection();
 
     // Manejador optimizado para el evento 'drop'
     const handleDrop = useCallback(
@@ -75,26 +81,50 @@ const DayColumn = React.memo(
         }
       },
       [dayKey, onDropRecipe]
-    );
-
-    // Manejador optimizado para rotar recetas
+    ); // Manejador optimizado para rotar recetas
     const handleRotateClick = useCallback(() => {
       onRotateRecipeForDay(dayKey);
     }, [dayKey, onRotateRecipeForDay]);
 
+    // Manejador para toque en dispositivos móviles
+    const handleMobileTap = useCallback(() => {
+      if (isTouchDevice && onMobileTapDay) {
+        onMobileTapDay(dayKey);
+      }
+    }, [dayKey, onMobileTapDay, isTouchDevice]);
+
     // Memoiza la traducción del día
     const dayTitle = useMemo(() => DAY_TRANSLATIONS[dayKey], [dayKey]);
 
+    // Clases CSS dinámicas para el día
+    const dayColumnClasses = useMemo(() => {
+      const baseClasses =
+        "bg-slate-50 dark:bg-slate-800 p-4 rounded-xl shadow-md min-h-[250px] flex flex-col border dark:border-slate-700 hover:shadow-lg transition-all duration-200";
+      const highlightClasses = isHighlightedForMobile
+        ? "ring-2 ring-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 transform scale-105"
+        : "";
+      const mobileClasses =
+        isTouchDevice && isHighlightedForMobile ? "cursor-pointer" : "";
+
+      return `${baseClasses} ${highlightClasses} ${mobileClasses}`;
+    }, [isHighlightedForMobile, isTouchDevice]);
     return (
       <div
-        className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl shadow-md min-h-[250px] flex flex-col border dark:border-slate-700 hover:shadow-lg transition-shadow duration-200"
+        className={dayColumnClasses}
         onDrop={handleDrop}
         onDragOver={onDragOverDay}
+        onClick={handleMobileTap}
       >
+        {" "}
         {/* Encabezado optimizado de la columna del día */}
         <div className="flex justify-between items-center mb-4 pb-2 border-b-2 border-emerald-200 dark:border-emerald-700">
           <h3 className="text-xl font-semibold text-emerald-700 dark:text-emerald-400">
             {dayTitle}
+            {isHighlightedForMobile && (
+              <span className="ml-2 text-sm bg-emerald-500 text-white px-2 py-1 rounded-full">
+                TOCA AQUÍ
+              </span>
+            )}
           </h3>
           <button
             onClick={handleRotateClick}
@@ -106,7 +136,6 @@ const DayColumn = React.memo(
             <RotateCcw size={18} />
           </button>
         </div>
-
         {/* Contenedor optimizado de recetas */}
         <div className="space-y-3 flex-grow custom-scrollbar overflow-y-auto max-h-[400px] p-1 -m-1">
           {recipesForThisDay.length > 0 ? (
@@ -145,7 +174,9 @@ const DayColumn = React.memo(
                 className="text-slate-400 dark:text-slate-500 mb-2"
               />
               <p className="text-sm text-slate-400 dark:text-slate-500">
-                Arrastra recetas aquí
+                {isTouchDevice
+                  ? "Toca una receta y luego este día"
+                  : "Arrastra recetas aquí"}
               </p>
             </div>
           )}
@@ -281,6 +312,16 @@ const WeeklyPlanner = ({
   const [weeklyPlan, setWeeklyPlan] = useState(getLocalWeeklyPlan);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
+  // Hooks para funcionalidad móvil
+  const { isTouchDevice } = useMobileDetection();
+  const {
+    selectedRecipeForMobile,
+    isAddingToDay,
+    showMobileInstructions,
+    clearMobileSelection,
+    setShowMobileInstructions,
+  } = useMobileInteraction();
+
   // Sincronización optimizada con localStorage
   useEffect(() => {
     setWeeklyPlan(getLocalWeeklyPlan());
@@ -345,11 +386,38 @@ const WeeklyPlanner = ({
     },
     [allUserRecipes, weeklyPlan, updateWeeklyPlan, showToast]
   );
-
   // Manejador optimizado para cerrar modal
   const handleCloseModal = useCallback(() => {
     setSelectedRecipe(null);
   }, []);
+
+  // Manejador para toque en día (dispositivos móviles)
+  const handleMobileTapDay = useCallback(
+    dayKey => {
+      if (selectedRecipeForMobile && isAddingToDay) {
+        handleDropRecipeOnDay(dayKey, selectedRecipeForMobile.id);
+        clearMobileSelection();
+        showToast?.("Receta añadida mediante toque.", "success");
+      }
+    },
+    [
+      selectedRecipeForMobile,
+      isAddingToDay,
+      handleDropRecipeOnDay,
+      clearMobileSelection,
+      showToast,
+    ]
+  );
+
+  // Manejador para cancelar selección móvil
+  const handleCancelMobileSelection = useCallback(() => {
+    clearMobileSelection();
+  }, [clearMobileSelection]);
+
+  // Manejador para cerrar instrucciones móviles
+  const handleCloseMobileInstructions = useCallback(() => {
+    setShowMobileInstructions(false);
+  }, [setShowMobileInstructions]);
 
   // Memoización de recetas disponibles ordenadas
   const availableRecipesSorted = useMemo(
@@ -363,7 +431,7 @@ const WeeklyPlanner = ({
       <div className="lg:w-3/5 xl:w-2/3">
         <h2 className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-6 break-words">
           🗓️ Plan Semanal
-        </h2>
+        </h2>{" "}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {DAYS_OF_WEEK.map(day => (
             <DayColumn
@@ -376,6 +444,8 @@ const WeeklyPlanner = ({
               onRemoveRecipeFromDay={handleRemoveRecipeFromDay}
               onRotateRecipeForDay={handleRotateRecipeForDay}
               onShowRecipeDetails={setSelectedRecipe}
+              onMobileTapDay={handleMobileTapDay}
+              isHighlightedForMobile={isAddingToDay}
             />
           ))}
         </div>
@@ -384,11 +454,12 @@ const WeeklyPlanner = ({
       <div className="lg:w-2/5 xl:w-1/3 space-y-4 p-5 bg-white dark:bg-slate-800 rounded-xl shadow-xl border dark:border-slate-700">
         <h2 className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400 mb-3 break-words">
           📚 Recetas Disponibles
-        </h2>
+        </h2>{" "}
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
-          Arrastra una receta a un día.
+          {isTouchDevice
+            ? "Toca una receta para seleccionarla, luego toca un día."
+            : "Arrastra una receta a un día."}
         </p>
-
         <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4 pb-8">
           {availableRecipesSorted.length > 0 ? (
             availableRecipesSorted.map(recipe => (
@@ -405,10 +476,17 @@ const WeeklyPlanner = ({
               🍲 No hay recetas. ¡Crea algunas!
             </p>
           )}
-        </div>
+        </div>{" "}
       </div>
       {/* Modal de detalles optimizado */}
       <RecipeDetailsModal recipe={selectedRecipe} onClose={handleCloseModal} />
+      {/* Instrucciones móviles */}
+      <MobileInstructions
+        isVisible={showMobileInstructions}
+        onClose={handleCloseMobileInstructions}
+        selectedRecipe={selectedRecipeForMobile}
+        onCancel={handleCancelMobileSelection}
+      />
     </div>
   );
 };

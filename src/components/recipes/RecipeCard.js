@@ -8,6 +8,8 @@ import {
   X,
   GripVertical,
 } from "lucide-react";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { useMobileInteraction } from "../../contexts/MobileInteractionContext";
 
 /**
  * Componente RecipeCard
@@ -46,6 +48,13 @@ const RecipeCard = memo(
     isDraggable = false,
     showDeleteButton = false,
   }) => {
+    // Detectar dispositivo móvil y obtener contexto de interacción móvil
+    const { isTouchDevice } = useMobileDetection();
+    const { selectedRecipeForMobile, isAddingToDay, selectRecipeForMobile } =
+      useMobileInteraction();
+
+    // Verificar si esta receta está seleccionada para móvil
+    const isSelectedForMobile = selectedRecipeForMobile?.id === recipe.id;
     // URL de imagen placeholder memoizada para evitar recreación
     const placeholderImage = useMemo(() => {
       const recipeName = recipe.name || "Receta";
@@ -63,13 +72,17 @@ const RecipeCard = memo(
         }
       },
       [isDraggable, recipe.id]
-    );
-
-    // Manejador optimizado para clic en tarjeta
+    ); // Manejador optimizado para clic en tarjeta
     const handleCardClick = useCallback(
       e => {
         // Evita propagación si se hace clic en botones
         if (e.target.closest("button")) return;
+
+        // En dispositivos móviles y modo arrastrable, seleccionar para táctil
+        if (isTouchDevice && isDraggable && !isAddingToDay) {
+          selectRecipeForMobile(recipe);
+          return;
+        }
 
         if (onShowDetails) {
           onShowDetails(recipe);
@@ -77,7 +90,15 @@ const RecipeCard = memo(
           onSelect(recipe);
         }
       },
-      [onShowDetails, onSelect, isDraggable, recipe]
+      [
+        onShowDetails,
+        onSelect,
+        isDraggable,
+        recipe,
+        isTouchDevice,
+        isAddingToDay,
+        selectRecipeForMobile,
+      ]
     );
 
     // Manejador optimizado para error de imagen
@@ -112,38 +133,54 @@ const RecipeCard = memo(
         onDelete?.(recipe.id);
       },
       [onDelete, recipe.id]
-    );
-
-    // Clases CSS memoizadas para la tarjeta
+    ); // Clases CSS memoizadas para la tarjeta
     const cardClasses = useMemo(() => {
       const baseClasses =
         "bg-white dark:bg-gradient-to-br dark:from-slate-800/90 dark:to-slate-700/70 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 backdrop-blur-sm border dark:border-slate-600/30";
-      const selectedClasses = isSelected ? "ring-2 ring-emerald-500" : "";
-      const cursorClasses = isDraggable ? "cursor-grab" : "cursor-pointer";
+      const selectedClasses =
+        isSelected || isSelectedForMobile ? "ring-2 ring-emerald-500" : "";
+      const cursorClasses = isDraggable
+        ? isTouchDevice
+          ? "cursor-pointer"
+          : "cursor-grab"
+        : "cursor-pointer";
+      const mobileSelectedClasses = isSelectedForMobile
+        ? "bg-emerald-50 dark:bg-emerald-900/20"
+        : "";
 
-      return `${baseClasses} ${selectedClasses} ${cursorClasses}`;
-    }, [isSelected, isDraggable]);
+      return `${baseClasses} ${selectedClasses} ${cursorClasses} ${mobileSelectedClasses}`;
+    }, [isSelected, isDraggable, isTouchDevice, isSelectedForMobile]);
 
     // Información de tiempo y porciones memoizada
     const recipeInfo = useMemo(
       () => (
         <div className="flex items-center text-xs text-slate-600 dark:text-slate-300 mb-2 space-x-2">
           {recipe.prepTime && (
-            <div className="flex items-center">
+            <div className="flex items-center recipe-action-button">
               <ClockIcon
                 size={12}
-                className="mr-1 text-emerald-500"
+                className="mr-1"
                 aria-hidden="true"
+                style={{
+                  color: "#059669",
+                  stroke: "#059669",
+                  strokeWidth: 1.5,
+                }}
               />
               <span>{recipe.prepTime}</span>
             </div>
           )}
           {recipe.servings && (
-            <div className="flex items-center">
+            <div className="flex items-center recipe-action-button">
               <Users
                 size={12}
-                className="mr-1 text-emerald-500"
+                className="mr-1"
                 aria-hidden="true"
+                style={{
+                  color: "#059669",
+                  stroke: "#059669",
+                  strokeWidth: 1.5,
+                }}
               />
               <span>{recipe.servings} porc.</span>
             </div>
@@ -157,36 +194,44 @@ const RecipeCard = memo(
 
       return (
         <div className="mt-3 pt-2 border-t dark:border-slate-600 flex justify-end space-x-1.5">
+          {" "}
           {onShare && (
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-full hover:bg-blue-100 dark:hover:bg-slate-600 text-blue-500 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+              className="recipe-action-button p-1.5 rounded-full hover:bg-blue-100 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
               title="Compartir Receta"
               aria-label={`Compartir receta ${recipe.name}`}
             >
-              <Share2 size={16} />
+              <Share2
+                size={16}
+                style={{ color: "#2563eb", stroke: "#2563eb", strokeWidth: 2 }}
+              />
             </button>
           )}
-
           {onEdit && (
             <button
               onClick={handleEdit}
-              className="p-1.5 rounded-full hover:bg-emerald-100 dark:hover:bg-slate-600 text-emerald-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+              className="recipe-action-button p-1.5 rounded-full hover:bg-emerald-100 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
               title="Editar Receta"
               aria-label={`Editar receta ${recipe.name}`}
             >
-              <Edit3 size={16} />
+              <Edit3
+                size={16}
+                style={{ color: "#16a34a", stroke: "#16a34a", strokeWidth: 2 }}
+              />
             </button>
           )}
-
           {onDelete && (
             <button
               onClick={handleDelete}
-              className="p-1.5 rounded-full hover:bg-red-100 dark:hover:bg-slate-600 text-red-500 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
+              className="recipe-action-button p-1.5 rounded-full hover:bg-red-100 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500 dark:focus:ring-slate-400 focus:ring-offset-2 transition-colors"
               title="Eliminar Receta"
               aria-label={`Eliminar receta ${recipe.name}`}
             >
-              <Trash2 size={16} />
+              <Trash2
+                size={16}
+                style={{ color: "#dc2626", stroke: "#dc2626", strokeWidth: 2 }}
+              />
             </button>
           )}
         </div>
@@ -223,17 +268,27 @@ const RecipeCard = memo(
             loading="lazy"
             decoding="async"
             onError={handleImageError}
-          />
-
+          />{" "}
           {/* Ícono de arrastre si la tarjeta es arrastrable */}
-          {isDraggable && (
+          {isDraggable && !isTouchDevice && (
             <GripVertical
               size={16}
               className="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded p-0.5"
               aria-hidden="true"
             />
           )}
-
+          {/* Indicador táctil para móviles */}
+          {isDraggable && isTouchDevice && (
+            <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              TOCA
+            </div>
+          )}
+          {/* Indicador de selección para móviles */}
+          {isSelectedForMobile && (
+            <div className="absolute top-2 left-2 bg-emerald-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+              ✓ SELECCIONADA
+            </div>
+          )}
           {/* Botón de eliminar específico para el planificador */}
           {showDeleteButton && onDelete && (
             <button

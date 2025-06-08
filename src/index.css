@@ -174,3 +174,143 @@ button {
   Aquí puedes añadir cualquier estilo CSS global o personalizado
   que no esté cubierto por Tailwind o que necesite ser anulado.
 */
+
+/* =============================================================================
+   ESTILOS PARA ICONOS - COLORES FIJOS INDEPENDIENTES DEL MODO
+   ============================================================================= */
+
+/* Estrategia más agresiva para asegurar que los iconos tengan color */
+
+/* COMPARTIR - Azul vibrante */
+.recipe-action-button svg,
+button.recipe-action-button svg,
+div.recipe-action-button svg,
+.dark .recipe-action-button svg,
+.dark button.recipe-action-button svg,
+.dark div.recipe-action-button svg {
+  transition: all 0.2s ease !important;
+}
+
+/* Selectores específicos para cada tipo de icono por posición/contexto */
+/* Primer botón (compartir) */
+.recipe-action-button:first-of-type svg,
+button.recipe-action-button:first-of-type svg,
+.dark .recipe-action-button:first-of-type svg,
+.dark button.recipe-action-button:first-of-type svg {
+  color: #2563eb !important;
+  stroke: #2563eb !important;
+  fill: none !important;
+  stroke-width: 2 !important;
+}
+
+/* Segundo botón (editar) */
+.recipe-action-button:nth-of-type(2) svg,
+button.recipe-action-button:nth-of-type(2) svg,
+.dark .recipe-action-button:nth-of-type(2) svg,
+.dark button.recipe-action-button:nth-of-type(2) svg {
+  color: #16a34a !important;
+  stroke: #16a34a !important;
+  fill: none !important;
+  stroke-width: 2 !important;
+}
+
+/* Tercer botón (eliminar) */
+.recipe-action-button:nth-of-type(3) svg,
+.recipe-action-button:last-of-type svg,
+button.recipe-action-button:nth-of-type(3) svg,
+button.recipe-action-button:last-of-type svg,
+.dark .recipe-action-button:nth-of-type(3) svg,
+.dark .recipe-action-button:last-of-type svg,
+.dark button.recipe-action-button:nth-of-type(3) svg,
+.dark button.recipe-action-button:last-of-type svg {
+  color: #dc2626 !important;
+  stroke: #dc2626 !important;
+  fill: none !important;
+  stroke-width: 2 !important;
+}
+
+/* Para iconos de información (tiempo y usuarios) en divs */
+div.recipe-action-button svg {
+  color: #059669 !important;
+  stroke: #059669 !important;
+  fill: none !important;
+  stroke-width: 1.5 !important;
+}
+
+/* Soporte específico para ClockIcon */
+.recipe-action-button [data-lucide="clock-icon"],
+.recipe-action-button [data-lucide="clock"],
+div.recipe-action-button [data-lucide="clock-icon"],
+div.recipe-action-button [data-lucide="clock"],
+.dark .recipe-action-button [data-lucide="clock-icon"],
+.dark .recipe-action-button [data-lucide="clock"],
+.dark div.recipe-action-button [data-lucide="clock-icon"],
+.dark div.recipe-action-button [data-lucide="clock"] {
+  color: #059669 !important;
+  stroke: #059669 !important;
+  fill: none !important;
+  stroke-width: 1.5 !important;
+}
+
+/* Excepción para iconos que deben mantener color en modo oscuro */
+.dark .keep-color svg {
+  color: inherit !important;
+  stroke: inherit !important;
+  fill: inherit !important;
+}
+
+/* Efectos hover para mejor interactividad */
+button[title*="Compartir"]:hover svg,
+button[aria-label*="Compartir"]:hover svg,
+.dark button[title*="Compartir"]:hover svg,
+.dark button[aria-label*="Compartir"]:hover svg {
+  color: #1d4ed8 !important;
+  stroke: #1d4ed8 !important;
+  transform: scale(1.1);
+}
+
+button[title*="Editar"]:hover svg,
+button[aria-label*="Editar"]:hover svg,
+.dark button[title*="Editar"]:hover svg,
+.dark button[aria-label*="Editar"]:hover svg {
+  color: #15803d !important;
+  stroke: #15803d !important;
+  transform: scale(1.1);
+}
+
+button[title*="Eliminar"]:hover svg,
+button[aria-label*="Eliminar"]:hover svg,
+.dark button[title*="Eliminar"]:hover svg,
+.dark button[aria-label*="Eliminar"]:hover svg {
+  color: #b91c1c !important;
+  stroke: #b91c1c !important;
+  transform: scale(1.1);
+}
+
+/* Hover para selectores de data-lucide */
+.recipe-action-button:hover [data-lucide="share-2"],
+button.recipe-action-button:hover [data-lucide="share-2"],
+.dark .recipe-action-button:hover [data-lucide="share-2"],
+.dark button.recipe-action-button:hover [data-lucide="share-2"] {
+  color: #1d4ed8 !important;
+  stroke: #1d4ed8 !important;
+  transform: scale(1.1);
+}
+
+.recipe-action-button:hover [data-lucide="edit-3"],
+button.recipe-action-button:hover [data-lucide="edit-3"],
+.dark .recipe-action-button:hover [data-lucide="edit-3"],
+.dark button.recipe-action-button:hover [data-lucide="edit-3"] {
+  color: #15803d !important;
+  stroke: #15803d !important;
+  transform: scale(1.1);
+}
+
+.recipe-action-button:hover [data-lucide="trash-2"],
+button.recipe-action-button:hover [data-lucide="trash-2"],
+.dark .recipe-action-button:hover [data-lucide="trash-2"],
+.dark button.recipe-action-button:hover [data-lucide="trash-2"] {
+  color: #b91c1c !important;
+  stroke: #b91c1c !important;
+  transform: scale(1.1);
+}

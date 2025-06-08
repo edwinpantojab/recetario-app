@@ -73,6 +73,8 @@
         "test:coverage": "cross-env NODE_ENV=test react-scripts test --coverage --watchAll=false",
         "test:ci": "cross-env CI=true npm run test:coverage",
         "eject": "react-scripts eject",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
         "lint": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
         "lint:check": "eslint src --ext .js,.jsx,.ts,.tsx",
         "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
@@ -97,8 +99,6 @@
         "dev:clean": "npm run clean && npm run dev",
         "prod:preview": "npm run build && npm run serve",
         "prod:test": "npm run build && npm run test:ci",
-        "predeploy": "npm run build",
-        "deploy": "gh-pages -d build",
         "deploy:force": "gh-pages -d build -f"
     },
     "eslintConfig": {

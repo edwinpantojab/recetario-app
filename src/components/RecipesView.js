@@ -56,7 +56,8 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
-  const [recipeToDelete, setRecipeToDelete] = useState(null);  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [recipeToDelete, setRecipeToDelete] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [recipeLinkToShare, setRecipeLinkToShare] = useState("");
   const [recipeToShare, setRecipeToShare] = useState(null);
   // Cargar recetas al montar el componente
@@ -161,10 +162,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
   const handleCancelDelete = useCallback(() => {
     setIsConfirmDeleteModalOpen(false);
     setRecipeToDelete(null);
-  }, []);  // Manejador optimizado para compartir receta
+  }, []); // Manejador optimizado para compartir receta
   const handleShareRecipe = useCallback(
     recipe => {
-      const shareLink = `${window.location.origin}/recipe/${recipe.id}`;
+      // Crear una URL que apunte a la aplicación principal con información de la receta
+      const shareLink = `${window.location.origin}${window.location.pathname}?recipe=${encodeURIComponent(recipe.name)}&id=${recipe.id}`;
       setRecipeLinkToShare(shareLink);
       setRecipeToShare(recipe);
       setIsShareModalOpen(true);
@@ -248,10 +250,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
               </div>
               {/* Información de tiempo y porciones */}{" "}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mb-4">
+                {" "}
                 <div className="bg-gradient-to-br from-slate-50 to-emerald-50 dark:from-slate-800/60 dark:to-slate-700/40 rounded-lg p-3 flex items-center gap-2 border dark:border-emerald-400/20 backdrop-blur-sm">
                   <ClockIcon
                     size={18}
-                    className="text-emerald-500 flex-shrink-0"
+                    className="text-emerald-500 dark:text-slate-300 flex-shrink-0"
                     aria-hidden="true"
                   />
                   <span className="font-semibold">Tiempo:</span>
@@ -262,7 +265,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                 <div className="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-800/60 dark:to-slate-700/40 rounded-lg p-3 flex items-center gap-2 border dark:border-blue-400/20 backdrop-blur-sm">
                   <Users
                     size={18}
-                    className="text-emerald-500 flex-shrink-0"
+                    className="text-emerald-500 dark:text-slate-300 flex-shrink-0"
                     aria-hidden="true"
                   />
                   <span className="font-semibold">Porciones:</span>
@@ -340,11 +343,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
           {filter || category !== ALL_CATEGORIES
             ? "No hay recetas que coincidan con tu búsqueda."
             : "No tienes recetas guardadas aún."}
-        </div>
+        </div>{" "}
         {!filter && category === ALL_CATEGORIES && (
           <button
             onClick={handleCreateNewRecipe}
-            className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors recipe-action-button"
           >
             <PlusCircle size={18} className="mr-2" />
             Crear tu primera receta
@@ -354,6 +357,65 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
     ),
     [filter, category, handleCreateNewRecipe]
   );
+
+  // Detectar y manejar parámetros de URL para recetas compartidas
+  useEffect(() => {
+    const checkSharedRecipe = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedRecipeId = urlParams.get("id");
+      const sharedRecipeName = urlParams.get("recipe");
+
+      if (sharedRecipeId && recipes.length > 0) {
+        // Buscar la receta por ID
+        const sharedRecipe = recipes.find(
+          recipe => recipe.id === sharedRecipeId
+        );
+
+        if (sharedRecipe) {
+          // Mostrar la receta automáticamente
+          setSelectedRecipe(sharedRecipe);
+          showToast?.(`¡Receta "${sharedRecipe.name}" encontrada!`, "success");
+
+          // Limpiar la URL sin recargar la página
+          const url = new URL(window.location);
+          url.searchParams.delete("id");
+          url.searchParams.delete("recipe");
+          window.history.replaceState({}, "", url);
+        } else if (sharedRecipeName) {
+          // Si no se encuentra por ID, buscar por nombre
+          const recipeByName = recipes.find(recipe =>
+            recipe.name
+              .toLowerCase()
+              .includes(decodeURIComponent(sharedRecipeName).toLowerCase())
+          );
+
+          if (recipeByName) {
+            setSelectedRecipe(recipeByName);
+            showToast?.(
+              `¡Receta "${recipeByName.name}" encontrada!`,
+              "success"
+            );
+          } else {
+            showToast?.(
+              `No se encontró la receta "${decodeURIComponent(sharedRecipeName)}"`,
+              "warning"
+            );
+          }
+
+          // Limpiar la URL
+          const url = new URL(window.location);
+          url.searchParams.delete("id");
+          url.searchParams.delete("recipe");
+          window.history.replaceState({}, "", url);
+        }
+      }
+    };
+
+    // Verificar después de que las recetas se hayan cargado
+    if (recipes.length > 0) {
+      checkSharedRecipe();
+    }
+  }, [recipes, showToast]);
 
   return (
     <div className="w-full px-1 sm:px-2 md:px-4">
@@ -397,7 +459,6 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
           </div>
         </div>
       </div>
-
       {/* Grid de recetas */}
       <div className="mt-4 sm:mt-6">
         <div className="w-full px-1 sm:px-3">
@@ -413,13 +474,12 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                     onShare={() => handleShareRecipe(recipe)}
                   />
                 ))
-              : EmptyState}
-
+              : EmptyState}{" "}
             {/* Botón de nueva receta integrado en el grid */}
             {filteredRecipes.length > 0 && (
               <button
                 onClick={handleCreateNewRecipe}
-                className="flex items-center justify-center px-4 py-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold shadow-lg transition-all hover:shadow-xl hover:-translate-y-1 border-2 border-dashed border-emerald-400 hover:border-emerald-300"
+                className="flex items-center justify-center px-4 py-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold shadow-lg transition-all hover:shadow-xl hover:-translate-y-1 border-2 border-dashed border-emerald-400 hover:border-emerald-300 recipe-action-button"
                 aria-label="Crear nueva receta"
               >
                 <div className="text-center">
@@ -431,7 +491,6 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
           </div>
         </div>
       </div>
-
       {/* Modales del componente */}
       {/* Modal para crear/editar receta */}
       <RecipeForm
@@ -440,13 +499,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         onSave={handleSaveRecipe}
         initialRecipe={editingRecipe}
       />
-
       {/* Modal de detalles de receta */}
       <RecipeDetailsModal
         recipe={selectedRecipe}
         onClose={() => setSelectedRecipe(null)}
       />
-
       {/* Modal de confirmación para eliminar receta */}
       <CustomConfirmModal
         isOpen={isConfirmDeleteModalOpen}
@@ -457,7 +514,8 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         confirmButtonText="Eliminar"
         cancelButtonText="Cancelar"
         variant="danger"
-      />      {/* Modal para compartir receta */}
+      />{" "}
+      {/* Modal para compartir receta */}
       <SocialShareModal
         isOpen={isShareModalOpen}
         onClose={() => {
@@ -468,12 +526,11 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         recipe={recipeToShare}
         shareUrl={recipeLinkToShare}
         showToast={showToast}
-      />
-
+      />{" "}
       {/* Botón flotante para crear receta */}
       <button
         onClick={handleCreateNewRecipe}
-        className="fixed bottom-8 right-8 z-50 bg-gradient-to-br from-pink-400 to-emerald-500 hover:from-pink-500 hover:to-emerald-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center transition-all hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2"
+        className="fixed bottom-8 right-8 z-50 bg-gradient-to-br from-pink-400 to-emerald-500 hover:from-pink-500 hover:to-emerald-600 text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center transition-all hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2 recipe-action-button"
         title="Crear nueva receta"
         aria-label="Crear nueva receta"
       >
