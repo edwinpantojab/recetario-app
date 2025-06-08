@@ -1,0 +1,171 @@
+{
+  "short_name": "Recetario Mágico",
+  "name": "Recetario Mágico - Gestiona tus Recetas y Listas de Compras",
+  "description": "Aplicación web progresiva para gestionar recetas de cocina, planificar comidas semanales y crear listas de compras de manera eficiente.",
+  "icons": [
+    {
+      "src": "/recetario-app/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/recetario-app/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/recetario-app/favicon-64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/recetario-app/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/recetario-app/favicon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/recetario-app/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "/recetario-app/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/recetario-app/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/recetario-app/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/recetario-app/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/recetario-app/",
+  "scope": "/recetario-app/",
+  "id": "/recetario-app/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#047857",
+  "background_color": "#f8fafc",
+  "categories": [
+    "food",
+    "lifestyle",
+    "productivity"
+  ],
+  "lang": "es",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "shortcuts": [
+    {
+      "name": "Mis Recetas",
+      "short_name": "Recetas",
+      "description": "Acceso rápido a tus recetas guardadas",
+      "url": "/recetario-app/?view=recipes",
+      "icons": [
+        {
+          "src": "/recetario-app/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Lista de Compras",
+      "short_name": "Compras",
+      "description": "Acceso rápido a tu lista de compras",
+      "url": "/recetario-app/?view=shopping",
+      "icons": [
+        {
+          "src": "/recetario-app/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Planificador",
+      "short_name": "Planear",
+      "description": "Planifica tus comidas semanales",
+      "url": "/recetario-app/?view=planner",
+      "icons": [
+        {
+          "src": "/recetario-app/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Recetas Online",
+      "short_name": "Online",
+      "description": "Explora recetas de internet",
+      "url": "/recetario-app/?view=online",
+      "icons": [
+        {
+          "src": "/recetario-app/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/recetario-app/android-chrome-512x512.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista principal de Recetario Mágico en escritorio"
+    },
+    {
+      "src": "/recetario-app/android-chrome-512x512.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vista móvil de Recetario Mágico"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+recipe",
+      "url": "/recetario-app/?recipe=%s"
+    }
+  ],
+  "related_applications": [],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ]
+}
