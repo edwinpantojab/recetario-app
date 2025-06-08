@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/recetario-app/static/css/main.630d4690.css",
-    "main.js": "/recetario-app/static/js/main.9b660fea.js",
+    "main.css": "/recetario-app/static/css/main.5f041b5f.css",
+    "main.js": "/recetario-app/static/js/main.117d2135.js",
     "static/js/250.bc8b54a2.chunk.js": "/recetario-app/static/js/250.bc8b54a2.chunk.js",
-    "static/js/116.2f4f388e.chunk.js": "/recetario-app/static/js/116.2f4f388e.chunk.js",
+    "static/js/28.73a4848f.chunk.js": "/recetario-app/static/js/28.73a4848f.chunk.js",
     "static/js/969.95220e18.chunk.js": "/recetario-app/static/js/969.95220e18.chunk.js",
-    "static/js/826.62b38fc9.chunk.js": "/recetario-app/static/js/826.62b38fc9.chunk.js",
+    "static/js/281.6b476a9c.chunk.js": "/recetario-app/static/js/281.6b476a9c.chunk.js",
     "index.html": "/recetario-app/index.html",
-    "main.630d4690.css.map": "/recetario-app/static/css/main.630d4690.css.map",
-    "main.9b660fea.js.map": "/recetario-app/static/js/main.9b660fea.js.map",
+    "main.5f041b5f.css.map": "/recetario-app/static/css/main.5f041b5f.css.map",
+    "main.117d2135.js.map": "/recetario-app/static/js/main.117d2135.js.map",
     "250.bc8b54a2.chunk.js.map": "/recetario-app/static/js/250.bc8b54a2.chunk.js.map",
-    "116.2f4f388e.chunk.js.map": "/recetario-app/static/js/116.2f4f388e.chunk.js.map",
+    "28.73a4848f.chunk.js.map": "/recetario-app/static/js/28.73a4848f.chunk.js.map",
     "969.95220e18.chunk.js.map": "/recetario-app/static/js/969.95220e18.chunk.js.map",
-    "826.62b38fc9.chunk.js.map": "/recetario-app/static/js/826.62b38fc9.chunk.js.map"
+    "281.6b476a9c.chunk.js.map": "/recetario-app/static/js/281.6b476a9c.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.630d4690.css",
-    "static/js/main.9b660fea.js"
+    "static/css/main.5f041b5f.css",
+    "static/js/main.117d2135.js"
   ]
 }
