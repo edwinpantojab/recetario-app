@@ -1,21 +1,23 @@
 {
   "files": {
-    "main.css": "/recetario-app/static/css/main.d1c360d3.css",
-    "main.js": "/recetario-app/static/js/main.12b1e391.js",
+    "main.css": "/recetario-app/static/css/main.dfd99b44.css",
+    "main.js": "/recetario-app/static/js/main.b3059213.js",
     "static/js/260.936a0d11.chunk.js": "/recetario-app/static/js/260.936a0d11.chunk.js",
-    "static/js/28.4723543d.chunk.js": "/recetario-app/static/js/28.4723543d.chunk.js",
+    "static/js/28.23171902.chunk.js": "/recetario-app/static/js/28.23171902.chunk.js",
     "static/js/969.95220e18.chunk.js": "/recetario-app/static/js/969.95220e18.chunk.js",
-    "static/js/103.6ee83d3e.chunk.js": "/recetario-app/static/js/103.6ee83d3e.chunk.js",
+    "static/js/103.12a8db59.chunk.js": "/recetario-app/static/js/103.12a8db59.chunk.js",
+    "static/js/656.c4de1fe8.chunk.js": "/recetario-app/static/js/656.c4de1fe8.chunk.js",
     "index.html": "/recetario-app/index.html",
-    "main.d1c360d3.css.map": "/recetario-app/static/css/main.d1c360d3.css.map",
-    "main.12b1e391.js.map": "/recetario-app/static/js/main.12b1e391.js.map",
+    "main.dfd99b44.css.map": "/recetario-app/static/css/main.dfd99b44.css.map",
+    "main.b3059213.js.map": "/recetario-app/static/js/main.b3059213.js.map",
     "260.936a0d11.chunk.js.map": "/recetario-app/static/js/260.936a0d11.chunk.js.map",
-    "28.4723543d.chunk.js.map": "/recetario-app/static/js/28.4723543d.chunk.js.map",
+    "28.23171902.chunk.js.map": "/recetario-app/static/js/28.23171902.chunk.js.map",
     "969.95220e18.chunk.js.map": "/recetario-app/static/js/969.95220e18.chunk.js.map",
-    "103.6ee83d3e.chunk.js.map": "/recetario-app/static/js/103.6ee83d3e.chunk.js.map"
+    "103.12a8db59.chunk.js.map": "/recetario-app/static/js/103.12a8db59.chunk.js.map",
+    "656.c4de1fe8.chunk.js.map": "/recetario-app/static/js/656.c4de1fe8.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d1c360d3.css",
-    "static/js/main.12b1e391.js"
+    "static/css/main.dfd99b44.css",
+    "static/js/main.b3059213.js"
   ]
 }
