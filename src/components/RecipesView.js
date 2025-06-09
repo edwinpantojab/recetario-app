@@ -7,7 +7,7 @@ import SocialShareModal from "./SocialShareModal";
 import IngredientsListModal from "./ui/IngredientsListModal"; // NUEVO: Modal para mostrar solo ingredientes
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "../data/defaultRecipes";
-import { Plus, PlusCircle, ClockIcon, Users, ShoppingCart } from "lucide-react";
+import { PlusCircle, ClockIcon, Users, ShoppingCart } from "lucide-react";
 import { CATEGORIES } from "../data/constants";
 import { trackRecipeEvent } from "../utils/analytics";
 
@@ -217,12 +217,18 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
     },
     [showToast]
   );
-
-  // Manejador para abrir formulario de nueva receta
-  const handleCreateNewRecipe = useCallback(() => {
-    setEditingRecipe(null);
-    setIsFormOpen(true);
-  }, []);
+  // Manejador para toggle del formulario de nueva receta
+  const handleToggleNewRecipe = useCallback(() => {
+    if (isFormOpen) {
+      // Si el formulario está abierto, cerrarlo
+      setIsFormOpen(false);
+      setEditingRecipe(null);
+    } else {
+      // Si el formulario está cerrado, abrirlo para nueva receta
+      setEditingRecipe(null);
+      setIsFormOpen(true);
+    }
+  }, [isFormOpen]);
   // Manejador para editar receta
   const handleEditRecipe = useCallback(recipe => {
     setEditingRecipe(recipe);
@@ -408,7 +414,6 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
       },
     [getPlaceholderImage, handleShowIngredients]
   );
-
   // Mensaje de recetas vacías memoizado
   const EmptyState = useMemo(
     () => (
@@ -420,7 +425,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         </div>{" "}
         {!filter && category === ALL_CATEGORIES && (
           <button
-            onClick={handleCreateNewRecipe}
+            onClick={handleToggleNewRecipe}
             className="inline-flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors recipe-action-button"
           >
             <PlusCircle size={18} className="mr-2" />
@@ -429,7 +434,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         )}
       </div>
     ),
-    [filter, category, handleCreateNewRecipe]
+    [filter, category, handleToggleNewRecipe]
   );
 
   // Detectar y manejar parámetros de URL para recetas compartidas
@@ -551,7 +556,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
             {/* Botón de nueva receta integrado en el grid */}
             {filteredRecipes.length > 0 && (
               <button
-                onClick={handleCreateNewRecipe}
+                onClick={handleToggleNewRecipe}
                 className="flex items-center justify-center px-4 py-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-base font-semibold shadow-lg transition-all hover:shadow-xl hover:-translate-y-1 border-2 border-dashed border-emerald-400 hover:border-emerald-300 recipe-action-button"
                 aria-label="Crear nueva receta"
               >
@@ -608,15 +613,94 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
         showToast={showToast}
       />{" "}
       {/* Botón flotante para crear receta */}
-      <button
-        onClick={handleCreateNewRecipe}
-        className="fixed bottom-16 sm:bottom-20 right-4 sm:right-8 z-50 bg-gradient-to-br from-pink-400 to-emerald-500 hover:from-pink-500 hover:to-emerald-600 text-white rounded-full shadow-lg w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center transition-all hover:shadow-xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-offset-2 recipe-action-button"
-        title="Crear nueva receta"
-        aria-label="Crear nueva receta"
-      >
-        <Plus size={24} className="sm:hidden" aria-hidden="true" />
-        <Plus size={28} className="hidden sm:block" aria-hidden="true" />
-      </button>
+      <div className="fixed bottom-16 sm:bottom-20 right-4 sm:right-8 z-50">
+        {/* Efecto de resplandor exterior para estado cerrado */}
+        {!isFormOpen && (
+          <div className="absolute inset-0 -m-2 rounded-full bg-gradient-to-r from-emerald-400/30 via-green-400/30 to-teal-400/30 blur-lg animate-pulse"></div>
+        )}
+
+        <button
+          onClick={handleToggleNewRecipe}
+          className={`group relative text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center transition-all duration-500 focus:outline-none focus:ring-4 focus:ring-offset-2 recipe-action-button ${
+            isFormOpen
+              ? "bg-gradient-to-br from-red-500 via-red-600 to-red-700 hover:from-red-600 hover:via-red-700 hover:to-red-800 focus:ring-red-500/50 animate-none shadow-xl hover:shadow-2xl hover:scale-110"
+              : "bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:via-emerald-600 hover:to-emerald-700 focus:ring-emerald-400/60 shadow-lg shadow-emerald-500/50 hover:shadow-xl hover:shadow-emerald-400/60 hover:scale-125 transform hover:-translate-y-1"
+          }`}
+          title={isFormOpen ? "Cerrar formulario" : "Crear nueva receta"}
+          aria-label={isFormOpen ? "Cerrar formulario" : "Crear nueva receta"}
+        >
+          {/* Efecto de brillo interno mejorado para estado cerrado */}
+          <div
+            className={`absolute inset-0 rounded-full transition-all duration-500 ${
+              isFormOpen
+                ? "bg-gradient-to-t from-transparent via-white/20 to-white/30 opacity-0 group-hover:opacity-100"
+                : "bg-gradient-to-tr from-transparent via-white/30 to-white/40 opacity-50 group-hover:opacity-80"
+            }`}
+          ></div>
+          {/* Anillo brillante para estado cerrado */}
+          {!isFormOpen && (
+            <div className="absolute inset-0 rounded-full border-2 border-white/20 group-hover:border-white/40 transition-all duration-300"></div>
+          )}{" "}
+          {/* Ícono principal - cambia según el estado */}
+          {isFormOpen ? (
+            /* Ícono X para cerrar */
+            <>
+              <div className="sm:hidden relative z-10 drop-shadow-sm w-6 h-6 flex items-center justify-center">
+                <div className="absolute w-4 h-0.5 bg-white rounded-full rotate-45"></div>
+                <div className="absolute w-4 h-0.5 bg-white rounded-full -rotate-45"></div>
+              </div>
+              <div className="hidden sm:flex relative z-10 drop-shadow-sm w-7 h-7 items-center justify-center">
+                <div className="absolute w-5 h-0.5 bg-white rounded-full rotate-45"></div>
+                <div className="absolute w-5 h-0.5 bg-white rounded-full -rotate-45"></div>
+              </div>
+            </>
+          ) : (
+            /* Ícono + mejorado para crear */
+            <>
+              {/* Versión móvil */}
+              <div className="sm:hidden relative z-10 w-7 h-7 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="absolute w-5 h-0.5 bg-white rounded-full drop-shadow-lg group-hover:w-6 transition-all duration-300"></div>
+                <div className="absolute w-0.5 h-5 bg-white rounded-full drop-shadow-lg group-hover:h-6 transition-all duration-300"></div>
+                {/* Resplandor del ícono */}
+                <div className="absolute w-5 h-0.5 bg-white/60 rounded-full blur-sm"></div>
+                <div className="absolute w-0.5 h-5 bg-white/60 rounded-full blur-sm"></div>
+              </div>
+
+              {/* Versión desktop */}
+              <div className="hidden sm:flex relative z-10 w-8 h-8 items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="absolute w-6 h-0.5 bg-white rounded-full drop-shadow-lg group-hover:w-7 transition-all duration-300"></div>
+                <div className="absolute w-0.5 h-6 bg-white rounded-full drop-shadow-lg group-hover:h-7 transition-all duration-300"></div>
+                {/* Resplandor del ícono */}
+                <div className="absolute w-6 h-0.5 bg-white/60 rounded-full blur-sm"></div>
+                <div className="absolute w-0.5 h-6 bg-white/60 rounded-full blur-sm"></div>
+              </div>
+            </>
+          )}
+          {/* Círculo de pulso animado mejorado - solo cuando está cerrado */}
+          {!isFormOpen && (
+            <>
+              <div className="absolute inset-0 rounded-full bg-emerald-300/40 animate-ping"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-300/20 via-green-300/30 to-teal-300/20 animate-pulse"></div>
+            </>
+          )}{" "}
+          {/* Borde brillante mejorado */}
+          <div
+            className={`absolute inset-0 rounded-full border transition-all duration-500 ${
+              isFormOpen
+                ? "border-red-300/50 group-hover:border-red-200/70"
+                : "border-emerald-200/60 group-hover:border-white/80 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]"
+            }`}
+          ></div>
+          {/* Efecto de partículas flotantes para estado cerrado */}
+          {!isFormOpen && (
+            <>
+              <div className="absolute -top-1 -right-1 w-1 h-1 bg-white/80 rounded-full animate-bounce delay-100"></div>
+              <div className="absolute -top-2 right-2 w-0.5 h-0.5 bg-emerald-200/90 rounded-full animate-pulse delay-300"></div>
+              <div className="absolute top-1 -right-2 w-0.5 h-0.5 bg-white/70 rounded-full animate-bounce delay-500"></div>
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };

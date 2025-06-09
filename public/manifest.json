@@ -38,25 +38,13 @@
       "src": "/recetario-app/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
-      "src": "/recetario-app/android-chrome-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "/recetario-app/android-chrome-512x512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any"
-    },
-    {
-      "src": "/recetario-app/android-chrome-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/recetario-app/",
