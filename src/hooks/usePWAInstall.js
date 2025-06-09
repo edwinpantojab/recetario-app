@@ -14,13 +14,16 @@ import { useState, useEffect, useCallback } from "react";
 const usePWAInstall = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showBanner, setShowBanner] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const STORAGE_KEYS = {
-    PWA_INSTALL_STATUS: "recetario_pwa_install_status", // Cambio: solo guardamos si fue instalada
-    FIRST_VISIT: "recetario_first_visit",
-  };
-  // Verificar si mostrar el banner
+  // Constantes para localStorage (definidas fuera de useEffect para evitar dependencias)
+  const PWA_INSTALL_STATUS = "recetario_pwa_install_status";
+  const FIRST_VISIT = "recetario_first_visit";
+  // Inicialización una sola vez
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log("🚀 PWA Hook inicializando...");
+
     // Limpiar claves antigas del localStorage para evitar conflictos
     const oldKeys = [
       "recetario_pwa_banner_dismissed",
@@ -28,57 +31,118 @@ const usePWAInstall = () => {
     ];
     oldKeys.forEach(key => {
       if (localStorage.getItem(key)) {
+        // eslint-disable-next-line no-console
+        console.log(`🧹 Limpiando clave antigua: ${key}`);
         localStorage.removeItem(key);
       }
     });
 
-    const installStatus = localStorage.getItem(STORAGE_KEYS.PWA_INSTALL_STATUS);
-    const firstVisit = localStorage.getItem(STORAGE_KEYS.FIRST_VISIT);
-
+    const firstVisit = localStorage.getItem(FIRST_VISIT);
     if (!firstVisit) {
-      localStorage.setItem(STORAGE_KEYS.FIRST_VISIT, "true");
+      // eslint-disable-next-line no-console
+      console.log("👋 Primera visita detectada");
+      localStorage.setItem(FIRST_VISIT, "true");
     }
 
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      window.navigator.standalone === true;
+    setIsInitialized(true);
+    // eslint-disable-next-line no-console
+    console.log("✅ PWA Hook inicializado");
+  }, []); // Solo una vez al montar
 
-    // Solo mostrar nuestro banner personalizado si:
-    // 1. La app NO está instalada (no en modo standalone)
-    // 2. NO se ha instalado previamente (installStatus !== "installed")
-    // 3. NO hay un deferredPrompt disponible (para evitar duplicados)
-    // 4. Esperamos un poco para asegurar que beforeinstallprompt se ejecute primero
-    if (!isStandalone && installStatus !== "installed" && !deferredPrompt) {
-      // Aumentamos el tiempo de espera para dar chance al beforeinstallprompt
-      const timer = setTimeout(() => {
-        // Verificamos nuevamente que no haya deferredPrompt antes de mostrar
-        if (!deferredPrompt) {
-          setShowBanner(true);
-        }
-      }, 5000); // 5 segundos de espera
-      return () => clearTimeout(timer);
-    } else if (deferredPrompt) {
-      // Si hay deferredPrompt, ocultar nuestro banner para evitar duplicación
-      setShowBanner(false);
-    }
-  }, [
-    STORAGE_KEYS.PWA_INSTALL_STATUS,
-    STORAGE_KEYS.FIRST_VISIT,
-    deferredPrompt,
-  ]); // Escuchar eventos PWA
+  // Verificar si mostrar el banner
+  useEffect(() => {
+    if (!isInitialized) return;
+    const checkAndShowBanner = () => {
+      const installStatus = localStorage.getItem(PWA_INSTALL_STATUS);
+      const isStandalone =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+
+      // eslint-disable-next-line no-console
+      console.log("🔍 PWA Banner Debug:", {
+        isInitialized,
+        installStatus,
+        isStandalone,
+        deferredPrompt: !!deferredPrompt,
+      }); // LÓGICA CORREGIDA:
+      // Mostrar nuestro banner personalizado si:
+      // 1. No está en modo standalone (no es PWA instalada)
+      // 2. No se ha instalado previamente
+      const shouldShow = !isStandalone && installStatus !== "installed";
+
+      // En desarrollo, siempre mostrar nuestro banner (ignoring deferredPrompt)
+      // En producción, dar prioridad al prompt nativo si está disponible
+      const isDevelopment = process.env.NODE_ENV === "development";
+      const shouldHideForNativePrompt =
+        !isDevelopment && deferredPrompt !== null;
+
+      // eslint-disable-next-line no-console
+      console.log("🎯 PWA Banner Logic:", {
+        shouldShow,
+        isDevelopment,
+        shouldHideForNativePrompt,
+        finalDecision: shouldShow && !shouldHideForNativePrompt,
+      });
+
+      if (shouldShow && !shouldHideForNativePrompt) {
+        // eslint-disable-next-line no-console
+        console.log("✅ Mostrando PWA banner personalizado");
+        setShowBanner(true);
+      } else {
+        // eslint-disable-next-line no-console
+        console.log("❌ Ocultando PWA banner:", {
+          reason: !shouldShow
+            ? "no debería mostrar"
+            : "prompt nativo disponible",
+        });
+        setShowBanner(false);
+      }
+    }; // Verificar inmediatamente
+    checkAndShowBanner();
+
+    // Timer para re-verificar después de un pequeño delay solo si no se ha mostrado aún
+    const timer = setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log("⏰ Timer re-verificando estado del banner...");
+      checkAndShowBanner();
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [isInitialized, deferredPrompt]); // Removed constant dependency  // Escuchar eventos PWA
   useEffect(() => {
     const handleBeforeInstallPrompt = e => {
+      // eslint-disable-next-line no-console
+      console.log("🔔 beforeinstallprompt event detected");
+
+      // IMPORTANTE: Interceptamos el evento para controlar cuándo mostrar el banner
+      // Esto genera un warning en Chrome: "Banner not shown: beforeinstallprompt..."
+      // El warning es ESPERADO y NO es un error - significa que tenemos control total
       e.preventDefault();
       setDeferredPrompt(e);
-      // Inmediatamente ocultar nuestro banner personalizado
-      setShowBanner(false);
+
+      // En desarrollo, mantenemos nuestro banner personalizado visible para testing
+      // En producción, podemos dar prioridad al prompt nativo del navegador
+      const isDevelopment = process.env.NODE_ENV === "development";
+      if (!isDevelopment) {
+        // eslint-disable-next-line no-console
+        console.log(
+          "🔄 Production mode - hiding custom banner for native prompt"
+        );
+        setShowBanner(false);
+      } else {
+        // eslint-disable-next-line no-console
+        console.log("🔧 Development mode - keeping custom banner visible");
+        // El warning del navegador es normal - tenemos el control del timing
+      }
     };
 
     const handleAppInstalled = () => {
+      // eslint-disable-next-line no-console
+      console.log("📱 App installed - updating status");
       setDeferredPrompt(null);
       setShowBanner(false);
       // Solo aquí guardamos que la app fue instalada
-      localStorage.setItem(STORAGE_KEYS.PWA_INSTALL_STATUS, "installed");
+      localStorage.setItem(PWA_INSTALL_STATUS, "installed");
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -91,47 +155,66 @@ const usePWAInstall = () => {
       );
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
-  }, [STORAGE_KEYS.PWA_INSTALL_STATUS]);
+  }, []); // Dependencies removed as they are constants
+
   const handleInstall = useCallback(async () => {
+    // eslint-disable-next-line no-console
+    console.log("🚀 Iniciando proceso de instalación PWA...", {
+      hasDeferredPrompt: !!deferredPrompt,
+    });
+
     if (!deferredPrompt) {
-      // Si no hay deferredPrompt, simplemente cerrar nuestro banner
-      // NO guardamos nada en localStorage para que aparezca en la próxima visita
+      // eslint-disable-next-line no-console
+      console.log(
+        "ℹ️ No hay prompt nativo disponible - solo cerrando banner personalizado"
+      );
       setShowBanner(false);
       return false;
     }
 
     try {
+      // eslint-disable-next-line no-console
+      console.log("📱 Mostrando prompt nativo de instalación...");
+
+      // Aquí es donde finalmente llamamos .prompt() - esto resuelve el warning del navegador
       await deferredPrompt.prompt();
       const result = await deferredPrompt.userChoice;
+
+      // eslint-disable-next-line no-console
+      console.log("✅ Resultado de instalación:", result.outcome);
 
       setDeferredPrompt(null);
       setShowBanner(false);
 
       // Solo guardamos en localStorage si el usuario aceptó instalar
       if (result.outcome === "accepted") {
-        localStorage.setItem(STORAGE_KEYS.PWA_INSTALL_STATUS, "installed");
+        localStorage.setItem(PWA_INSTALL_STATUS, "installed");
+        // eslint-disable-next-line no-console
+        console.log("🎉 PWA instalada exitosamente!");
+      } else {
+        // eslint-disable-next-line no-console
+        console.log("❌ Usuario declinó la instalación");
       }
-      // Si declinó, NO guardamos nada para que aparezca en futuras visitas
 
       return result.outcome === "accepted";
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("💥 Error durante instalación PWA:", error);
       setShowBanner(false);
-      // En caso de error, NO guardamos nada para permitir intentar de nuevo
       return false;
     }
-  }, [deferredPrompt, STORAGE_KEYS.PWA_INSTALL_STATUS]);
+  }, [deferredPrompt]); // Removed unnecessary dependency
   const handleCloseBanner = useCallback(() => {
     setShowBanner(false);
     // NO guardamos nada en localStorage para que aparezca en futuras visitas
     // Solo ocultamos el banner por esta sesión
   }, []);
-
-  const isAppInstalled = () => {
+  const isAppInstalled = useCallback(() => {
     return (
       window.matchMedia("(display-mode: standalone)").matches ||
       window.navigator.standalone === true
     );
-  };
+  }, []);
 
   return {
     showBanner,
