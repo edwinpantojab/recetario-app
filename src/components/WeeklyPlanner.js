@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import RecipeCard from "./recipes/RecipeCard"; // Corregido: Se movió a la subcarpeta recipes
 import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layout
+import LikeButton from "./ui/LikeButton";
+import useRecipeLikes from "../hooks/useRecipeLikes";
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { useMobileDetection } from "../hooks/useMobileDetection";
 import { useMobileInteraction } from "../contexts/MobileInteractionContext";
@@ -192,6 +194,9 @@ const DayColumn = React.memo(
  * Componente reutilizable para mostrar información detallada de recetas
  */
 const RecipeDetailsModal = React.memo(({ recipe, onClose }) => {
+  // Hook para gestionar likes
+  const { getLikes, hasUserLiked, toggleLike } = useRecipeLikes();
+
   // Función auxiliar para crear placeholder (movida fuera del useMemo)
   const createPlaceholderImage = useCallback(recipeName => {
     return `https://placehold.co/600x300/E2E8F0/A0AEC0?text=${encodeURIComponent(
@@ -252,6 +257,17 @@ const RecipeDetailsModal = React.memo(({ recipe, onClose }) => {
             </span>
           </div>
         </div>
+        {/* Like button section */}
+        <div className="w-full flex justify-center mb-4">
+          <LikeButton
+            recipeId={recipe.id}
+            likesCount={getLikes(recipe.id)}
+            isLiked={hasUserLiked(recipe.id)}
+            onToggleLike={toggleLike}
+            size="lg"
+            showCount={true}
+          />
+        </div>
         {/* Sección de ingredientes optimizada */}
         <div className="w-full mb-4">
           <h3 className="text-lg font-bold text-emerald-700 dark:text-emerald-300 mb-2 flex items-center">
@@ -269,7 +285,9 @@ const RecipeDetailsModal = React.memo(({ recipe, onClose }) => {
                 </li>
               ))
             ) : (
-              <li className="text-slate-400 italic">Sin ingredientes</li>
+              <li className="text-slate-400 dark:text-slate-300 italic">
+                Sin ingredientes
+              </li>
             )}
           </ul>
         </div>
@@ -290,7 +308,9 @@ const RecipeDetailsModal = React.memo(({ recipe, onClose }) => {
                 </li>
               ))
             ) : (
-              <li className="text-slate-400 italic">Sin instrucciones</li>
+              <li className="text-slate-400 dark:text-slate-300 italic">
+                Sin instrucciones
+              </li>
             )}
           </ol>
         </div>

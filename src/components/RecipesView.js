@@ -5,6 +5,8 @@ import Modal from "./layout/Modal"; // Corregido: Se movió a la subcarpeta layo
 import CustomConfirmModal from "./ui/CustomConfirmModal"; // Corregido: Se movió a la subcarpeta ui
 import SocialShareModal from "./SocialShareModal";
 import IngredientsListModal from "./ui/IngredientsListModal"; // NUEVO: Modal para mostrar solo ingredientes
+import LikeButton from "./ui/LikeButton";
+import useRecipeLikes from "../hooks/useRecipeLikes";
 import { saveData, loadData } from "../data/localStorageHelpers";
 import { DEFAULT_RECIPES } from "../data/defaultRecipes";
 import { PlusCircle, ClockIcon, Users, ShoppingCart } from "lucide-react";
@@ -281,7 +283,9 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
     return `${PLACEHOLDER_IMAGE_BASE}${encodeURIComponent(
       recipeName || "Receta"
     )}`;
-  }, []);
+  }, []); // Hook para gestionar likes (a nivel de componente)
+  const { getLikes, hasUserLiked, toggleLike } = useRecipeLikes();
+
   // Componente de detalles de receta memoizado
   const RecipeDetailsModal = useMemo(
     () =>
@@ -346,6 +350,17 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                   </span>
                 </div>
               </div>
+              {/* Like button section */}
+              <div className="w-full flex justify-center mb-4">
+                <LikeButton
+                  recipeId={recipe.id}
+                  likesCount={getLikes(recipe.id)}
+                  isLiked={hasUserLiked(recipe.id)}
+                  onToggleLike={toggleLike}
+                  size="lg"
+                  showCount={true}
+                />
+              </div>
               {/* NUEVO: Botón para ver solo ingredientes */}
               <div className="w-full mb-4">
                 <button
@@ -376,7 +391,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                       </li>
                     ))
                   ) : (
-                    <li className="text-slate-400 italic">
+                    <li className="text-slate-400 dark:text-slate-300 italic">
                       Sin ingredientes especificados
                     </li>
                   )}
@@ -402,7 +417,7 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
                       </li>
                     ))
                   ) : (
-                    <li className="text-slate-400 italic">
+                    <li className="text-slate-400 dark:text-slate-300 italic">
                       Sin instrucciones especificadas
                     </li>
                   )}
@@ -412,12 +427,18 @@ const RecipesView = ({ showToast, setUserRecipes }) => {
           </Modal>
         );
       },
-    [getPlaceholderImage, handleShowIngredients]
+    [
+      getPlaceholderImage,
+      handleShowIngredients,
+      getLikes,
+      hasUserLiked,
+      toggleLike,
+    ]
   );
   // Mensaje de recetas vacías memoizado
   const EmptyState = useMemo(
     () => (
-      <div className="col-span-full text-center text-slate-500 py-8 sm:py-10">
+      <div className="col-span-full text-center text-slate-500 dark:text-slate-300 py-8 sm:py-10">
         <div className="text-base sm:text-lg mb-4">
           {filter || category !== ALL_CATEGORIES
             ? "No hay recetas que coincidan con tu búsqueda."

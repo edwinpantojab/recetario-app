@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { useMobileDetection } from "../../hooks/useMobileDetection";
 import { useMobileInteraction } from "../../contexts/MobileInteractionContext";
+import LikeButton from "../ui/LikeButton";
+import useRecipeLikes from "../../hooks/useRecipeLikes";
 
 /**
  * Componente RecipeCard
@@ -52,6 +54,9 @@ const RecipeCard = memo(
     const { isTouchDevice } = useMobileDetection();
     const { selectedRecipeForMobile, isAddingToDay, selectRecipeForMobile } =
       useMobileInteraction();
+
+    // Hook para gestionar likes de recetas
+    const { getLikes, hasUserLiked, toggleLike } = useRecipeLikes();
 
     // Verificar si esta receta está seleccionada para móvil
     const isSelectedForMobile = selectedRecipeForMobile?.id === recipe.id;
@@ -310,17 +315,25 @@ const RecipeCard = memo(
           >
             {recipe.name}
           </h3>
-
           {/* Categoría de la receta */}
           {recipe.category && (
             <span className="inline-block bg-amber-200 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full mb-2 tracking-wide truncate max-w-full">
               {recipe.category}
             </span>
-          )}
-
+          )}{" "}
           {/* Información adicional: tiempo y porciones */}
           {recipeInfo}
-
+          {/* Like button */}
+          <div className="flex justify-between items-center">
+            <LikeButton
+              recipeId={recipe.id}
+              likesCount={getLikes(recipe.id)}
+              isLiked={hasUserLiked(recipe.id)}
+              onToggleLike={toggleLike}
+              size="sm"
+              showCount={true}
+            />
+          </div>
           {/* Botones de acción */}
           {actionButtons}
         </div>
