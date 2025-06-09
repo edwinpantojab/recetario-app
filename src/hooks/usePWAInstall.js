@@ -68,32 +68,25 @@ const usePWAInstall = () => {
       // Mostrar nuestro banner personalizado si:
       // 1. No está en modo standalone (no es PWA instalada)
       // 2. No se ha instalado previamente
-      const shouldShow = !isStandalone && installStatus !== "installed";
-
-      // En desarrollo, siempre mostrar nuestro banner (ignoring deferredPrompt)
-      // En producción, dar prioridad al prompt nativo si está disponible
+      const shouldShow = !isStandalone && installStatus !== "installed";      // SIEMPRE mostrar nuestro banner personalizado si se cumplen las condiciones
+      // Ya no diferenciamos entre desarrollo y producción
       const isDevelopment = process.env.NODE_ENV === "development";
-      const shouldHideForNativePrompt =
-        !isDevelopment && deferredPrompt !== null;
 
       // eslint-disable-next-line no-console
       console.log("🎯 PWA Banner Logic:", {
         shouldShow,
         isDevelopment,
-        shouldHideForNativePrompt,
-        finalDecision: shouldShow && !shouldHideForNativePrompt,
+        environment: isDevelopment ? "desarrollo" : "producción",
+        finalDecision: shouldShow,
       });
 
-      if (shouldShow && !shouldHideForNativePrompt) {
+      if (shouldShow) {
         // eslint-disable-next-line no-console
         console.log("✅ Mostrando PWA banner personalizado");
-        setShowBanner(true);
-      } else {
+        setShowBanner(true);      } else {
         // eslint-disable-next-line no-console
         console.log("❌ Ocultando PWA banner:", {
-          reason: !shouldShow
-            ? "no debería mostrar"
-            : "prompt nativo disponible",
+          reason: "no cumple condiciones para mostrar (standalone o ya instalado)",
         });
         setShowBanner(false);
       }
